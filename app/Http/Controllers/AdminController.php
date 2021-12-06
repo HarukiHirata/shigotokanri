@@ -15,7 +15,7 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function adminlogin()
+    public function adminlogin(Request $request)
     {
         // 管理者テーブル参照
         $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->get();
@@ -26,10 +26,10 @@ class AdminController extends Controller
             session(['name' => $admin[0]->name]);
             session(['company_code' => $admin[0]->company_code]);
 
-            return redirect(url('/admin/home'));
+            return view('/admin/home')->with('success', 'ログインに成功しました。');
         } else {
             // パスワード不一致
-            return view('/admin/login');
+            return view('/admin/login')->with('fail', 'ログインに失敗しました。');
         }
     }
 
@@ -37,7 +37,7 @@ class AdminController extends Controller
     {
         session()->forget('name');
         session()->forget('company_code');
-        return view('/admin/login');
+        return view('/admin/logout');
     }
 
     public function index()
