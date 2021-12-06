@@ -20,17 +20,23 @@ class AdminController extends Controller
         // 管理者テーブル参照
         $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->get();
 
-        if (Hash::check($request->password, $admin[0]->password)) {
-            // パスワード一致
-            // セッション
-            session(['name' => $admin[0]->name]);
-            session(['company_code' => $admin[0]->company_code]);
-
-            return view('/admin/home')->with('success', 'ログインに成功しました。');
+        if (count($admin) == 0) {
+            // 入力された企業コードの中で一致する管理者コードがない場合ログイン画面にリダイアル。
+            return redirect(url('/admin/login'))->with('loginfail1', '企業コードもしくは管理者コードが間違っています。');
         } else {
-            // パスワード不一致
-            return view('/admin/login')->with('fail', 'ログインに失敗しました。');
-        }
+            // 入力された企業コードの中で一致する管理者コードがあった場合パスワードチェック
+            if (Hash::check($request->password, $admin[0]->password)) {
+                // パスワード一致
+                // セッション
+                session(['name' => $admin[0]->name]);
+                session(['company_code' => $admin[0]->company_code]);
+    
+                return redirect(url('/admin/home'))->with('success', 'ログインに成功しました。');
+            } else {
+                // パスワード不一致
+                return redirect(url('/admin/login'))->with('loginfail2', 'パスワードが間違っています。');
+            }
+        } 
     }
 
     public function adminlogout()

@@ -25,4 +25,8 @@ Route::get('/admin/login', function() {
 
 Route::post('/admin/login', 'AdminController@adminlogin')->name('adminlogin');
 
+Route::get('/admin/home', function() {
+    return view('/admin/home');
+});
+
 Route::get('/admin/logout', 'AdminController@adminlogout')->name('adminlogout');

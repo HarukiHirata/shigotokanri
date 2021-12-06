@@ -2,20 +2,19 @@
 
 @section('content')
 <div class="container">
+    @if (session('loginfail1'))
+        <div class="alert alert-danger">
+            {{ session('loginfail1') }}
+        </div>
+    @endif
+    @if (session('loginfail2'))
+        <div class="alert alert-danger">
+            {{ session('loginfail2') }}
+        </div>
+    @endif
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success')}}
-                    </div>
-                @endif
-
-                @if (session('fail'))
-                    <div class="alert alert-danger">
-                        {{ session('fail')}}
-                    </div>
-                @endif
                 <div class="card-header">{{ __('管理者ログイン') }}</div>
 
                 <div class="card-body">
@@ -54,7 +53,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('パスワード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
 
                                 <!-- @error('password')
                                     <span class="invalid-feedback" role="alert">
