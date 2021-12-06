@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -12,6 +14,32 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function adminlogin()
+    {
+        // 管理者テーブル参照
+        $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->get();
+
+        if (Hash::check($request->password, $admin[0]->password)) {
+            // パスワード一致
+            // セッション
+            session(['name' => $admin[0]->name]);
+            session(['company_code' => $admin[0]->company_code]);
+
+            return redirect(url('/admin/home'));
+        } else {
+            // パスワード不一致
+            return view('/admin/login');
+        }
+    }
+
+    public function adminlogout()
+    {
+        session()->forget('name');
+        session()->forget('company_code');
+        return view('/admin/login');
+    }
+
     public function index()
     {
         //
