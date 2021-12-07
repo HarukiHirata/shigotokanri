@@ -21,26 +21,30 @@ class AdminController extends Controller
         $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->get();
 
         if (count($admin) == 0) {
-            // 入力された企業コードの中で一致する管理者コードがない場合ログイン画面にリダイアル。
-            return redirect(url('/admin/login'))->with('loginfail1', '企業コードもしくは管理者コードが間違っています。');
+            // 入力された企業コードの中で一致する管理者コードがない場合、メッセージをセッションに格納してログイン画面にリダイアル。
+            session()->flash('toastr', config('toastr.loginfail'));
+            return redirect()->route('/admin/login');
         } else {
             // 入力された企業コードの中で一致する管理者コードがあった場合パスワードチェック
             if (Hash::check($request->password, $admin[0]->password)) {
                 // パスワード一致
-                // セッション
+                // セッションにログインユーザーの情報・メッセージを格納
                 session(['name' => $admin[0]->name]);
                 session(['company_code' => $admin[0]->company_code]);
-    
-                return redirect(url('/admin/home'))->with('success', 'ログインに成功しました。');
+
+                session()->flash('toastr', config('toastr.loginsuccess'));
+                return redirect()->route('/admin/home');
             } else {
-                // パスワード不一致
-                return redirect(url('/admin/login'))->with('loginfail2', 'パスワードが間違っています。');
+                // パスワード不一致の場合はメッセージをセッションに格納してログイン画面にリダイアル。
+                session()->flash('toastr', config('toastr.loginfail'));
+                return redirect()->route('/admin/login');
             }
         } 
     }
 
     public function adminlogout()
     {
+        // セッション削除
         session()->forget('name');
         session()->forget('company_code');
         return view('/admin/logout');
