@@ -2,16 +2,6 @@
 
 @section('content')
 <div class="container">
-    @if (session('loginfail1'))
-        <div class="alert alert-danger">
-            {{ session('loginfail1') }}
-        </div>
-    @endif
-    @if (session('loginfail2'))
-        <div class="alert alert-danger">
-            {{ session('loginfail2') }}
-        </div>
-    @endif
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -26,12 +16,6 @@
 
                             <div class="col-md-6">
                                 <input id="company_code" type="text" name="company_code" value="{{ old('company_code') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
@@ -40,12 +24,6 @@
 
                             <div class="col-md-6">
                                 <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
@@ -54,12 +32,6 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-
-                                <!-- @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
