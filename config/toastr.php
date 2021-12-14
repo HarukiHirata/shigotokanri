@@ -9,4 +9,8 @@ return [
         'type' => 'error',
         'text' => 'ログインに失敗しました。',
     ],
+    'success' => [
+        'type' => 'success',
+        'text' => '登録に成功しました。',
+    ],
 ];
