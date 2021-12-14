@@ -6,6 +6,7 @@ use App\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Http\Facades\DB;
 use Illuminate\Http\Facades\Hash;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -14,15 +15,20 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() {
+        return view('attendance.index');
+    }
+    
+    public function indexbymonth($searchMonth)
     {
-        $attendances = Attendance::where('employee_id', session('employee_id'))->get();
-        return view('attendance.index', ['attendances' => $attendances]);
+        $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $searchMonth);
+        return response()->json($attendances);
+        return view('attendance.index');
     }
 
     public function companyindex()
     {
-        $attendances = Attendance::where('company_id', session('company_id'))->get();
+        $attendances = Attendance::where('company_code', session('company_code'))->get();
         return view('attendance.companyindex', ['attendances' => $attendances]);
     }
 
@@ -49,21 +55,28 @@ class AttendanceController extends Controller
         
         // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
         $attendance = new Attendance;
-        $date = $request->date;
-        $time1 = new DateTime($request->start_time);
-        $time2 = new DateTime($request->end_time);
-        $working_hour = $time1->diff($time2);
+        $date = new Carbon($request->date);
+        $time1 = new Carbon($request->start_time);
+        $time2 = new Carbon($request->end_time);
+        $working_hours = $time1->diffInHours($time2) - ($request->break_time / 60);
 
-        // データをインスタンスのプロパティに入れてDBへ保存した後、ホーム画面へ遷移
+        // created_at,updated_atのカラムがないためタイムスタンプを無効化
+        $attendance->timestamps = false;
+
+        // データをインスタンスのプロパティに入れてDBへ保存。
         $attendance->employee_id = session('employee_id');
+        $attendance->company_code = session('company_code');
         $attendance->date = $date;
-        $attendance->month = date_format($date, 'Y-m');
+        $attendance->month = $date->format('Y-m');
         $attendance->start_time = $time1;
         $attendance->end_time = $time2;
-        $attendance->working_hours = $working_hour->format('%h');
+        $attendance->working_hours = $working_hours;
+        $attendance->break_time = $request->break_time;
         $attendance->delete_flg = 0;
         $attendance->save();
 
+        // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
+        session()->flash('toastr', config('toastr.success'));
         return redirect()->route('/employee/home');
     }
 

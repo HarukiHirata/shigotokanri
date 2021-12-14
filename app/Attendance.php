@@ -13,6 +13,7 @@ class Attendance extends Model
         'date' =>'required',
         'start_time' => 'required',
         'end_time' => 'required',
+        'break_time' => 'required',
     );
 
     // 従業員テーブルとのリレーション

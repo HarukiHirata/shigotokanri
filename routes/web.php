@@ -42,3 +42,8 @@ Route::get('/employee/home', function() {
 })->name('/employee/home');
 
 Route::get('/employee/logout', 'EmployeeController@emplogout')->name('emplogout');
+
+Route::get('/employee/attendance/create', 'AttendanceController@create');
+Route::post('/employee/attendance/create', 'AttendanceController@store');
+Route::get('/employee/attendance/index', 'AttendanceController@index');
+Route::get('/employee/attendance/index/{month?}', 'AttendanceController@indexbymonth');
