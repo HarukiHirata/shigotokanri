@@ -3,9 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Attendance extends Model
 {
+    protected static function boot() {
+        parent::boot();
+
+        static::addGlobalScope('delete_flg', function (Builder $builder) {
+            $builder->where('delete_flg', 0);
+        });
+    }
+    
     protected $guarded = array('id');
 
     // バリデーションルール

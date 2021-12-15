@@ -18,18 +18,15 @@ class AttendanceController extends Controller
     public function index() {
         return view('attendance.index');
     }
-    
-    public function indexbymonth($searchMonth)
-    {
-        $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $searchMonth);
-        return response()->json($attendances);
-        return view('attendance.index');
+
+    public function search(Request $request) {
+        $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $request->search_month)->get();
+        return view('attendance.index', ['attendances' => $attendances]);
     }
 
     public function companyindex()
     {
-        $attendances = Attendance::where('company_code', session('company_code'))->get();
-        return view('attendance.companyindex', ['attendances' => $attendances]);
+        return view('attendance.companyindex');
     }
 
     /**
