@@ -21,7 +21,7 @@ class EmployeeController extends Controller
         $employee = Employee::where('company_code', $request->company_code)->where('employee_code', $request->employee_code)->get();
 
         if (count($employee) == 0) {
-            // 入力された企業コードの中で一致する従業員コードがない場合、メッセージをセッションに格納してログイン画面にリダイアル。
+            // 入力された企業コードの中で一致する従業員コードがなかったり、入力された企業コードが存在しなかったりする場合、メッセージをセッションに格納してログイン画面にリダイアル。
             session()->flash('toastr', config('toastr.loginfail'));
             return redirect()->route('/employee/login');
         } else {
@@ -29,6 +29,7 @@ class EmployeeController extends Controller
             if (Hash::check($request->password, $employee[0]->password)) {
                 // パスワード一致
                 // セッションにログインユーザーの情報・メッセージを格納
+                session(['employee_id' => $employee[0]->id]);
                 session(['name' => $employee[0]->name]);
                 session(['company_code' => $employee[0]->company_code]);
                 session(['employee_code' => $employee[0]->employee_code]);
