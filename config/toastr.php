@@ -13,4 +13,8 @@ return [
         'type' => 'success',
         'text' => '登録に成功しました。',
     ],
+    'delete_success' => [
+        'type' => 'success',
+        'text' => '削除に成功しました。',
+    ],
 ];

@@ -4,7 +4,7 @@
 <h1 class="text-center">勤怠一覧画面</h1>
 <div class="attendance-search-form">
     <div class="card-body">
-        <form method="get">
+        <form method="post" action="/employee/attendance/index">
             @csrf
 
             <div class="form-group row">
@@ -12,18 +12,12 @@
 
                 <div class="col-md-6">
                     <input id="search_month" type="month" name="search_month" value="{{ old('search_month') }}">
-
-                    <!-- @error('email')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror -->
                 </div>
             </div>
 
             <div class="form-group row mb-0">
                 <div class="col-md-8 offset-md-4">
-                    <button type="button" class="btn btn-primary search-btn">
+                    <button type="submit" class="btn btn-primary search-btn">
                         {{ __('検索') }}
                     </button>
                 </div>
@@ -31,5 +25,47 @@
         </form>
     </div>
 </div>
-<div class="attendance-table"></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>勤務日</th>
+            <th>始業時間</th>
+            <th>終業時間</th>
+            <th>休憩時間</th>
+            <th>勤務時間</th>
+            <th>編集</th>
+            <th>削除</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!empty($attendances) && count($attendances) != 0)
+            @foreach ($attendances as $attendance)
+            <tr>
+                <td>{{ $attendance->date }}</td>
+                <td>{{ $attendance->start_time }}</td>
+                <td>{{ $attendance->end_time }}</td>
+                <td>{{ $attendance->break_time }}分</td>
+                <td>{{ $attendance->working_hours }}時間</td>
+                <td>
+                    <button type="button" class="btn btn-info">
+                        <a href="/employee/attendance/edit/{{ $attendance->id }}" class="a-white">編集</a>
+                    </button>
+                </td>
+                <td>
+                    <form method="post" action="/employee/attendance/destroy/{{ $attendance->id }}">
+                        @csrf
+                        <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')">削除</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        @elseif (!empty($nullmessage))
+            <tr>
+                <td>{{ $nullmessage }}</td>
+            </tr>
+        @endif
+    </tbody>
+</table>
+<a href="/employee/home">ホーム画面へ</a>
 @endsection
