@@ -58,6 +58,11 @@ class EmployeeController extends Controller
         //
     }
 
+    public function employeesbycompany() {
+        $employees = Employee::where('company_code', session('company_code'))->get();
+        return $employees;
+    }
+
     /**
      * Show the form for creating a new resource.
      *
