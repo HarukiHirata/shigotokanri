@@ -27,6 +27,6 @@ class Attendance extends Model
 
     // 従業員テーブルとのリレーション
     public function employee() {
-        $this->belongsTo('App\Employee');
+        return $this->belongsTo("App\Employee");
     }
 }

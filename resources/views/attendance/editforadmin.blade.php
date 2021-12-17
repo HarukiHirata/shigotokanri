@@ -12,6 +12,14 @@
                         @csrf
 
                         <div class="form-group row">
+                            <label for="employee_name" class="col-md-4 col-form-label text-md-right">{{ __('従業員名') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="employee_name" type="text" name="employee_name" value="{{ $attendance->employee->name }}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="date" class="col-md-4 col-form-label text-md-right">{{ __('勤務日') }}</label>
 
                             <div class="col-md-6">

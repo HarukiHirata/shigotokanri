@@ -4,7 +4,7 @@
 <h1 class="text-center">勤怠一覧画面</h1>
 <div class="attendance-search-form">
     <div class="card-body">
-        <form method="post" action="/employee/attendance/index">
+        <form method="post" action="/admin/attendance/index">
             @csrf
 
             <div class="form-group row">
@@ -12,6 +12,19 @@
 
                 <div class="col-md-6">
                     <input id="search_month" type="month" name="search_month" value="{{ old('search_month') }}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="employee_id" class="col-md-4 col-form-label text-md-right">{{ __('従業員') }}</label>
+
+                <div class="col-md-6">
+                    <select name="employee_id">
+                        <option value="">選択してください</option>
+                        @foreach ($employees as $employee)
+                            <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -28,6 +41,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>従業員名</th>
             <th>勤務日</th>
             <th>始業時間</th>
             <th>終業時間</th>
@@ -41,6 +55,7 @@
         @if (!empty($attendances) && count($attendances) != 0)
             @foreach ($attendances as $attendance)
             <tr>
+                <td>{{ $attendance->employee->name }}</td>
                 <td>{{ $attendance->date }}</td>
                 <td>{{ $attendance->start_time }}</td>
                 <td>{{ $attendance->end_time }}</td>
@@ -48,7 +63,7 @@
                 <td>{{ $attendance->working_hours }}時間</td>
                 <td>
                     <button type="button" class="btn btn-info">
-                        <a href="/employee/attendance/edit/{{ $attendance->id }}" class="a-white">編集</a>
+                        <a href="/admin/attendance/edit/{{ $attendance->id }}" class="a-white">編集</a>
                     </button>
                 </td>
                 <td>
@@ -67,5 +82,5 @@
         @endif
     </tbody>
 </table>
-<a href="/employee/home">ホーム画面へ</a>
+<a href="/admin/home">ホーム画面へ</a>
 @endsection
