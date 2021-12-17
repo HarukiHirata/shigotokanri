@@ -17,4 +17,8 @@ return [
         'type' => 'success',
         'text' => '削除に成功しました。',
     ],
+    'logout' => [
+        'type' => 'info',
+        'text' => 'ログアウトしました。',
+    ],
 ];

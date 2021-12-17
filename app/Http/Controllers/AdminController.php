@@ -44,10 +44,11 @@ class AdminController extends Controller
 
     public function adminlogout()
     {
-        // セッション削除
+        // セッション削除してトップ画面へリダイアル。
         session()->forget('name');
         session()->forget('company_code');
-        return view('/admin/logout');
+        session()->flash('toastr', config('toastr.logout'));
+        return redirect()->route('top');
     }
 
     public function index()

@@ -46,11 +46,12 @@ class EmployeeController extends Controller
 
     public function emplogout()
     {
-        // セッション削除
+        // セッション削除してトップ画面ヘリダイアル。
         session()->forget('name');
         session()->forget('company_code');
         session()->forget('employee_code');
-        return view('/employee/logout');
+        session()->flash('toastr', config('toastr.logout'));
+        return redirect()->route('top');
     }
 
     public function index()
