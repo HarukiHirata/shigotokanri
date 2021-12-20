@@ -31,6 +31,7 @@ class AdminController extends Controller
                 // セッションにログインユーザーの情報・メッセージを格納
                 session(['name' => $admin[0]->name]);
                 session(['company_code' => $admin[0]->company_code]);
+                session(['admin_code' => $admin[0]->admin_code]);
 
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/admin/home');
@@ -47,6 +48,7 @@ class AdminController extends Controller
         // セッション削除してトップ画面へリダイアル。
         session()->forget('name');
         session()->forget('company_code');
+        session()->forget('admin_code');
         session()->flash('toastr', config('toastr.logout'));
         return redirect()->route('top');
     }
