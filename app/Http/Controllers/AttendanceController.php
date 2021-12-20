@@ -42,6 +42,7 @@ class AttendanceController extends Controller
 
     //  管理者用の勤怠検索メソッド
     public function searchforadmin(Request $request) {
+        $nullmessage = '';
         if (!empty($request->employee_id)) {
             $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->where('month', $request->search_month)->get();
         } else {
@@ -50,7 +51,6 @@ class AttendanceController extends Controller
         if (count($attendances) == 0) {
             $nullmessage = '検索結果がありませんでした。';
         }
-        $nullmessage = '';
         $employee = new EmployeeController;
         $employees = $employee->employeesbycompany();
         return view('attendance.companyindex', ['attendances' => $attendances, 'nullmessage' => $nullmessage, 'employees' => $employees]);

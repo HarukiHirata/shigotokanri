@@ -13,6 +13,10 @@ return [
         'type' => 'success',
         'text' => '登録に成功しました。',
     ],
+    'fail' => [
+        'type' => 'error',
+        'text' => '登録に失敗しました。',
+    ],
     'delete_success' => [
         'type' => 'success',
         'text' => '削除に成功しました。',

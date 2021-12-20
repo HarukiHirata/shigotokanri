@@ -57,7 +57,8 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        //
+        $employees = $this->employeesbycompany();
+        return view('admin.employeeindex', ['employees' => $employees]);
     }
 
     public function employeesbycompany() {
@@ -72,7 +73,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.employeeregister');
     }
 
     /**
@@ -83,7 +84,33 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // バリデーション
+        $this->validate($request, Employee::$rules);
+
+        // インスタンス生成後、タイムスタンプを無効化。
+        $employee = new Employee;
+        $employee->timestamps = false;
+
+        // 従業員コードにダブりがないかチェック。
+        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
+
+        if (empty($employee_code_check)) {
+            // 従業員コードにダブりがない場合、フォームで入力された値やセッションの企業コードなどをインスタンスのプロパティに入れてDBへ保存。
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->company_code = session('company_code');
+            $employee->email = $request->email;
+            $employee->password = Hash::make($request->password);
+            $employee->delete_flg = 0;
+            $employee->save();
+
+            // 登録成功のメッセージをセッションに保存して従業員一覧画面へ遷移。
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('employeeindex');
+        } else {
+            session()->flash('toastr', config('toastr.fail'));
+            return view('admin.employeeregister');
+        }
     }
 
     /**
@@ -103,9 +130,10 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
-        //
+        $employee = Employee::where('id', $id)->first();
+        return view('admin.employeeedit', ['employee' => $employee]);
     }
 
     /**
