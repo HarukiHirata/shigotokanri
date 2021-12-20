@@ -47,6 +47,7 @@ class EmployeeController extends Controller
     public function emplogout()
     {
         // セッション削除してトップ画面ヘリダイアル。
+        session()->forget('employee_id');
         session()->forget('name');
         session()->forget('company_code');
         session()->forget('employee_code');
