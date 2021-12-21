@@ -6,6 +6,7 @@ use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\AttendanceController;
 
 class EmployeeController extends Controller
 {
@@ -57,7 +58,8 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        //
+        $employees = $this->employeesbycompany();
+        return view('admin.employeeindex', ['employees' => $employees]);
     }
 
     public function employeesbycompany() {
@@ -72,7 +74,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.employeeregister');
     }
 
     /**
@@ -83,7 +85,32 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // バリデーション
+        $this->validate($request, Employee::$rules);
+
+        // インスタンス生成
+        $employee = new Employee;
+
+        // 従業員コードにダブりがないかチェック。
+        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
+
+        if (empty($employee_code_check)) {
+            // 従業員コードにダブりがない場合、フォームで入力された値やセッションの企業コードなどをインスタンスのプロパティに入れてDBへ保存。
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->company_code = session('company_code');
+            $employee->email = $request->email;
+            $employee->password = Hash::make($request->password);
+            $employee->delete_flg = 0;
+            $employee->save();
+
+            // 登録成功のメッセージをセッションに保存して従業員一覧画面へ遷移。
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('employeeindex');
+        } else {
+            session()->flash('toastr', config('toastr.fail'));
+            return view('admin.employeeregister');
+        }
     }
 
     /**
@@ -103,9 +130,10 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
-        //
+        $employee = Employee::where('id', $id)->first();
+        return view('admin.employeeedit', ['employee' => $employee]);
     }
 
     /**
@@ -117,7 +145,24 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        $this->validate($request, Employee::$rules);
+
+        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
+        
+        if (empty($employee_code_check)) {
+            $employee = Employee::find($request->employee_id);
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->email = $request->email;
+            $employee->save();
+
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('employeeindex');
+        } else {
+            session()->flash('toastr', config('toastr.fail'));
+            $employee = Employee::where('id', $request->employee_id)->first();
+            return view('admin.employeeedit', ['employee' => $employee]);
+        }
     }
 
     /**
@@ -126,8 +171,16 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy(Request $request)
     {
-        //
+        $employee = Employee::find($request->employee_id);
+        $employee->delete_flg = 1;
+        $employee->save();
+
+        $attendances = new AttendanceController;
+        $attendances->destroybyemployeeid($request->employee_id);
+
+        session()->flash('toastr', config('toastr.delete_success'));
+        return redirect()->route('employeeindex');
     }
 }

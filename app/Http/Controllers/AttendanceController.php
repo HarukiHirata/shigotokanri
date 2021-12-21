@@ -42,6 +42,7 @@ class AttendanceController extends Controller
 
     //  管理者用の勤怠検索メソッド
     public function searchforadmin(Request $request) {
+        $nullmessage = '';
         if (!empty($request->employee_id)) {
             $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->where('month', $request->search_month)->get();
         } else {
@@ -50,7 +51,6 @@ class AttendanceController extends Controller
         if (count($attendances) == 0) {
             $nullmessage = '検索結果がありませんでした。';
         }
-        $nullmessage = '';
         $employee = new EmployeeController;
         $employees = $employee->employeesbycompany();
         return view('attendance.companyindex', ['attendances' => $attendances, 'nullmessage' => $nullmessage, 'employees' => $employees]);
@@ -85,9 +85,6 @@ class AttendanceController extends Controller
         $time1 = new Carbon($request->start_time);
         $time2 = new Carbon($request->end_time);
         $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
-
-        // created_at,updated_atのカラムがないためタイムスタンプを無効化
-        $attendance->timestamps = false;
 
         // データをインスタンスのプロパティに入れてDBへ保存。
         $attendance->employee_id = session('employee_id');
@@ -155,9 +152,6 @@ class AttendanceController extends Controller
         $time2 = new Carbon($request->end_time);
         $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
 
-        // created_at,updated_atのカラムがないためタイムスタンプを無効化
-        $attendance->timestamps = false;
-
         // データをインスタンスのプロパティに入れてDBへ保存。
         $attendance->employee_id = session('employee_id');
         $attendance->company_code = session('company_code');
@@ -185,11 +179,14 @@ class AttendanceController extends Controller
     public function destroy(Request $request)
     {
         $attendance = Attendance::find($request->attendance_id);
-        $attendance->timestamps = false;
         $attendance->delete_flg = 1;
         $attendance->save();
 
         session()->flash('toastr', config('toastr.delete_success'));
         return redirect()->route('attendanceindex');
+    }
+
+    public function destroybyemployeeid($employee_id) {
+        Attendance::where('employee_id', $employee_id)->update(['delete_flg' => 1]);
     }
 }
