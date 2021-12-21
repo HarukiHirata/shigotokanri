@@ -9,7 +9,7 @@
                 <div class="card-header">{{ __('従業員情報を入力してください。') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="/admin/employeeregister">
+                    <form method="POST" action="/admin/employeeupdate">
                         @csrf
 
                         <div class="form-group row">
@@ -53,6 +53,10 @@
                                 @enderror -->
                             </div>
                         </div>
+
+                        <input id="employee_id" type="hidden" name="employee_id" value="{{ $employee->id }}">
+
+                        <input id="password" type="hidden" name="password" value="{{ $employee->password }}">
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">

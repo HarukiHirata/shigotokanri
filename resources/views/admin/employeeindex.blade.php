@@ -27,7 +27,13 @@
                         <a href="/admin/employeeedit/{{ $employee->id }}" class="a-white">編集</a>
                     </button>
                 </td>
-                <td>削除</td>
+                <td>
+                    <form method="post" action="/admin/employeedestroy/{{ $employee->id }}">
+                        @csrf
+                        <input type="hidden" name="employee_id" value="{{ $employee->id }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')">削除</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         @else

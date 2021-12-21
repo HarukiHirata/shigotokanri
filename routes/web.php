@@ -56,6 +56,8 @@ Route::post('/admin/attendance/index', 'AttendanceController@searchforadmin');
 Route::get('/admin/attendance/edit/{id}', 'AttendanceController@editforadmin');
 
 Route::get('/admin/employeeregister', 'EmployeeController@create');
-Route::post('/admin/employeeregister', 'EmployeeController@store');
+Route::post('/admin/employeestore', 'EmployeeController@store');
 Route::get('/admin/employeeindex', 'EmployeeController@index')->name('employeeindex');
 Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit');
+Route::post('/admin/employeeupdate', 'EmployeeController@update');
+Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');

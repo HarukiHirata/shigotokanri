@@ -9,7 +9,7 @@
                 <div class="card-header">{{ __('従業員情報を入力してください。') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="/admin/employeeregister">
+                    <form method="POST" action="/admin/employeestore">
                         @csrf
 
                         <div class="form-group row">

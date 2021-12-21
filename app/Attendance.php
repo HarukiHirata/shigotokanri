@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Attendance extends Model
 {
+    public $timestamps = false;
+    
     protected static function boot() {
         parent::boot();
 

@@ -6,6 +6,7 @@ use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\AttendanceController;
 
 class EmployeeController extends Controller
 {
@@ -87,9 +88,8 @@ class EmployeeController extends Controller
         // バリデーション
         $this->validate($request, Employee::$rules);
 
-        // インスタンス生成後、タイムスタンプを無効化。
+        // インスタンス生成
         $employee = new Employee;
-        $employee->timestamps = false;
 
         // 従業員コードにダブりがないかチェック。
         $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
@@ -145,7 +145,24 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        $this->validate($request, Employee::$rules);
+
+        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
+        
+        if (empty($employee_code_check)) {
+            $employee = Employee::find($request->employee_id);
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->email = $request->email;
+            $employee->save();
+
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('employeeindex');
+        } else {
+            session()->flash('toastr', config('toastr.fail'));
+            $employee = Employee::where('id', $request->employee_id)->first();
+            return view('admin.employeeedit', ['employee' => $employee]);
+        }
     }
 
     /**
@@ -154,8 +171,16 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy(Request $request)
     {
-        //
+        $employee = Employee::find($request->employee_id);
+        $employee->delete_flg = 1;
+        $employee->save();
+
+        $attendances = new AttendanceController;
+        $attendances->destroybyemployeeid($request->employee_id);
+
+        session()->flash('toastr', config('toastr.delete_success'));
+        return redirect()->route('employeeindex');
     }
 }
