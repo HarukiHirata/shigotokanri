@@ -19,21 +19,21 @@ class EmployeeController extends Controller
     public function emplogin(Request $request)
     {
         // 従業員テーブル参照
-        $employee = Employee::where('company_code', $request->company_code)->where('employee_code', $request->employee_code)->get();
+        $employee = Employee::where('company_code', $request->company_code)->where('employee_code', $request->employee_code)->first();
 
-        if (count($employee) == 0) {
+        if (empty($employee)) {
             // 入力された企業コードの中で一致する従業員コードがなかったり、入力された企業コードが存在しなかったりする場合、メッセージをセッションに格納してログイン画面にリダイアル。
             session()->flash('toastr', config('toastr.loginfail'));
             return redirect()->route('/employee/login');
         } else {
             // 入力された企業コードの中で一致する従業員コードがあった場合パスワードチェック
-            if (Hash::check($request->password, $employee[0]->password)) {
+            if (Hash::check($request->password, $employee->password)) {
                 // パスワード一致
                 // セッションにログインユーザーの情報・メッセージを格納
-                session(['employee_id' => $employee[0]->id]);
-                session(['name' => $employee[0]->name]);
-                session(['company_code' => $employee[0]->company_code]);
-                session(['employee_code' => $employee[0]->employee_code]);
+                session(['employee_id' => $employee->id]);
+                session(['name' => $employee->name]);
+                session(['company_code' => $employee->company_code]);
+                session(['employee_code' => $employee->employee_code]);
 
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/employee/home');

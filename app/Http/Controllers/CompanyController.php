@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\AdminController;
 
 class CompanyController extends Controller
 {
@@ -15,6 +18,35 @@ class CompanyController extends Controller
     public function index()
     {
         //
+    }
+
+    public function companylogin(Request $request) {
+        $company = Company::where('company_code', $request->company_code)->first();
+
+        if (empty($company)) {
+            session()->flash('toastr', config('toastr.loginfail'));
+            return redirect()->route('/company/login');
+        } else {
+            if (Hash::check($request->password, $company->password)) {
+                session(['company_code' => $company->company_code]);
+                session(['company_name' => $company->name]);
+                session()->flash('toastr', config('toastr.loginsuccess'));
+                return redirect()->route('/company/home');
+            } else {
+                session()->flash('toastr', config('toastr.loginfail'));
+                return redirect()->route('/company/login');
+            }
+        }
+    }
+
+    public function companylogout() {
+        session()->forget('company_code');
+        session()->forget('company_name');
+        if (!empty(session('admins'))) {
+            session()->forget('admins');
+        }
+        session()->flash('toastr', config('toastr.logout'));
+        return redirect()->route('top');
     }
 
     /**

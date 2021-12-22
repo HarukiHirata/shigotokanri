@@ -61,3 +61,13 @@ Route::get('/admin/employeeindex', 'EmployeeController@index')->name('employeein
 Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit');
 Route::post('/admin/employeeupdate', 'EmployeeController@update');
 Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');
+
+Route::get('/company/login', function() {
+    return view('company.login');
+})->name('/company/login');
+Route::post('/company/login', 'CompanyController@companylogin')->name('companylogin');
+Route::get('/company/home', 'AdminController@index')->name('/company/home');
+Route::get('/company/logout', 'CompanyController@companylogout');
+
+Route::get('/company/adminregister', 'AdminController@create');
+Route::post('/company/adminstore', 'AdminController@store');
