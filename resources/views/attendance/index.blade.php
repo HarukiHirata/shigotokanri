@@ -68,5 +68,4 @@
         @endif
     </tbody>
 </table>
-<a href="/employee/home">ホーム画面へ</a>
 @endsection

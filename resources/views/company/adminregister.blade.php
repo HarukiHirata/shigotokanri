@@ -16,13 +16,7 @@
                             <label for="admin_code" class="col-md-4 col-form-label text-md-right">{{ __('管理者コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') }}">
                             </div>
                         </div>
 
@@ -30,13 +24,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="name" type="text" name="name" value="{{ old('name') }}">
                             </div>
                         </div>
 
@@ -44,13 +32,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" name="email" value="{{ old('email') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="email" type="text" name="email" value="{{ old('email') }}">
                             </div>
                         </div>
 
@@ -58,14 +40,8 @@
                             <label for="role" class="col-md-4 col-form-label text-md-right">{{ __('権限') }}</label>
 
                             <div class="col-md-6">
-                                <input id="role" type="radio" name="role" value="0" required>勤怠閲覧・編集可能
+                                <input id="role" type="radio" name="role" value="0">勤怠閲覧・編集可能
                                 <input id="role" type="radio" name="role" value="1">勤怠閲覧可能
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
@@ -73,13 +49,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('初期パスワード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" name="password" value="{{ old('password') }}" placeholder="8文字以上で入力してください" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="password" type="password" name="password" value="{{ old('password') }}" placeholder="8文字以上で入力してください">
                             </div>
                         </div>
 

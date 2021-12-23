@@ -55,10 +55,10 @@ Route::get('/admin/attendance/index', 'AttendanceController@companyindex')->name
 Route::post('/admin/attendance/index', 'AttendanceController@searchforadmin');
 Route::get('/admin/attendance/edit/{id}', 'AttendanceController@editforadmin');
 
-Route::get('/admin/employeeregister', 'EmployeeController@create');
+Route::get('/admin/employeeregister', 'EmployeeController@create')->name('employeeregister');
 Route::post('/admin/employeestore', 'EmployeeController@store');
 Route::get('/admin/employeeindex', 'EmployeeController@index')->name('employeeindex');
-Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit');
+Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit')->name('employeeedit');
 Route::post('/admin/employeeupdate', 'EmployeeController@update');
 Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');
 
@@ -69,9 +69,9 @@ Route::post('/company/login', 'CompanyController@companylogin')->name('companylo
 Route::get('/company/home', 'AdminController@index')->name('/company/home');
 Route::get('/company/logout', 'CompanyController@companylogout');
 
-Route::get('/company/adminregister', 'AdminController@create');
+Route::get('/company/adminregister', 'AdminController@create')->name('adminregister');
 Route::post('/company/adminstore', 'AdminController@store');
-Route::get('/company/adminedit/{id}', 'AdminController@edit');
+Route::get('/company/adminedit/{id}', 'AdminController@edit')->name('adminedit');
 Route::post('/company/adminupdate', 'AdminController@update');
 Route::post('/company/admindestroy/{id}', 'AdminController@destroy');
 

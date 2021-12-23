@@ -16,13 +16,8 @@
                             <label for="employee_code" class="col-md-4 col-form-label text-md-right">{{ __('従業員コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') ?? $employee->employee_code }}" required autofocus>
+                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') ?? $employee->employee_code }}">
 
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
@@ -30,13 +25,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" name="name" value="{{ old('name') ?? $employee->name }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="name" type="text" name="name" value="{{ old('name') ?? $employee->name }}">
                             </div>
                         </div>
 
@@ -44,13 +33,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" name="email" value="{{ old('email') ?? $employee->email }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="email" type="text" name="email" value="{{ old('email') ?? $employee->email }}">
                             </div>
                         </div>
 

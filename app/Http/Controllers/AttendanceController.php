@@ -24,7 +24,11 @@ class AttendanceController extends Controller
 
     // 従業員用の勤怠検索メソッド
     public function search(Request $request) {
-        $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $request->search_month)->get();
+        if (!empty($request->search_month)) {
+            $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $request->search_month)->get();
+        } else {
+            $attendances = Attendance::where('employee_id', session('employee_id'))->get();
+        }
         $nullmessage = '';
         if (count($attendances) == 0) {
             $nullmessage = '検索結果がありませんでした。';
@@ -79,24 +83,26 @@ class AttendanceController extends Controller
         // バリデーション
         $this->validate($request, Attendance::$rules);
         
-        // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
-        $attendance = new Attendance;
-        $date = new Carbon($request->date);
-        $time1 = new Carbon($request->start_time);
-        $time2 = new Carbon($request->end_time);
-        $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
+        DB::transaction(function () use ($request) {
+            // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
+            $attendance = new Attendance;
+            $date = new Carbon($request->date);
+            $time1 = new Carbon($request->start_time);
+            $time2 = new Carbon($request->end_time);
+            $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
 
-        // データをインスタンスのプロパティに入れてDBへ保存。
-        $attendance->employee_id = session('employee_id');
-        $attendance->company_code = session('company_code');
-        $attendance->date = $date;
-        $attendance->month = $date->format('Y-m');
-        $attendance->start_time = $time1;
-        $attendance->end_time = $time2;
-        $attendance->working_hours = $working_hours;
-        $attendance->break_time = $request->break_time;
-        $attendance->delete_flg = 0;
-        $attendance->save();
+            // データをインスタンスのプロパティに入れてDBへ保存。
+            $attendance->employee_id = session('employee_id');
+            $attendance->company_code = session('company_code');
+            $attendance->date = $date;
+            $attendance->month = $date->format('Y-m');
+            $attendance->start_time = $time1;
+            $attendance->end_time = $time2;
+            $attendance->working_hours = $working_hours;
+            $attendance->break_time = $request->break_time;
+            $attendance->delete_flg = 0;
+            $attendance->save();
+        });
 
         // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
         session()->flash('toastr', config('toastr.success'));
@@ -145,28 +151,33 @@ class AttendanceController extends Controller
         // バリデーション
         $this->validate($request, Attendance::$rules);
 
-        // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
-        $attendance = Attendance::find($request->attendance_id);
-        $date = new Carbon($request->date);
-        $time1 = new Carbon($request->start_time);
-        $time2 = new Carbon($request->end_time);
-        $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
+        DB::transaction(function () use ($request) {
+            // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
+            $attendance = Attendance::find($request->attendance_id);
+            $date = new Carbon($request->date);
+            $time1 = new Carbon($request->start_time);
+            $time2 = new Carbon($request->end_time);
+            $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
 
-        // データをインスタンスのプロパティに入れてDBへ保存。
-        $attendance->employee_id = session('employee_id');
-        $attendance->company_code = session('company_code');
-        $attendance->date = $date;
-        $attendance->month = $date->format('Y-m');
-        $attendance->start_time = $time1;
-        $attendance->end_time = $time2;
-        $attendance->working_hours = $working_hours;
-        $attendance->break_time = $request->break_time;
-        $attendance->delete_flg = 0;
-        $attendance->save();
+            // データをインスタンスのプロパティに入れてDBへ保存。
+            $attendance->date = $date;
+            $attendance->month = $date->format('Y-m');
+            $attendance->start_time = $time1;
+            $attendance->end_time = $time2;
+            $attendance->working_hours = $working_hours;
+            $attendance->break_time = $request->break_time;
+            $attendance->delete_flg = 0;
+            $attendance->save();
+        });
 
         // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
-        session()->flash('toastr', config('toastr.success'));
-        return redirect()->route('/employee/home');
+        if ($request->transition == 'admin') {
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('attendindexbycmp');
+        } elseif ($request->transition == 'employee') {
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('attendindex');
+        }
     }
 
     /**
@@ -178,9 +189,11 @@ class AttendanceController extends Controller
     // 勤怠履歴削除機能（従業員・管理者用の画面で共通）
     public function destroy(Request $request)
     {
-        $attendance = Attendance::find($request->attendance_id);
-        $attendance->delete_flg = 1;
-        $attendance->save();
+        DB::transaction(function () use ($request) {
+            $attendance = Attendance::find($request->attendance_id);
+            $attendance->delete_flg = 1;
+            $attendance->save();
+        });
 
         if ($request->transition == 'admin') {
             session()->flash('toastr', config('toastr.delete_success'));
@@ -192,6 +205,8 @@ class AttendanceController extends Controller
     }
 
     public function destroybyemployeeid($employee_id) {
-        Attendance::where('employee_id', $employee_id)->update(['delete_flg' => 1]);
+        DB::transaction(function () use ($employee_id) {
+            Attendance::where('employee_id', $employee_id)->update(['delete_flg' => 1]);
+        });
     }
 }

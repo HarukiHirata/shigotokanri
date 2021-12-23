@@ -16,13 +16,7 @@
                             <label for="date" class="col-md-4 col-form-label text-md-right">{{ __('勤務日') }}</label>
 
                             <div class="col-md-6">
-                                <input id="date" type="date" name="date" value="{{ old('date') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="date" type="date" name="date" value="{{ old('date') }}">
                             </div>
                         </div>
 
@@ -30,13 +24,7 @@
                             <label for="start_time" class="col-md-4 col-form-label text-md-right">{{ __('始業時間') }}</label>
 
                             <div class="col-md-6">
-                                <input id="start_time" type="time" name="start_time" value="{{ old('start_time') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="start_time" type="time" name="start_time" value="{{ old('start_time') }}">
                             </div>
                         </div>
 
@@ -44,13 +32,7 @@
                             <label for="end_time" class="col-md-4 col-form-label text-md-right">{{ __('終業時間') }}</label>
 
                             <div class="col-md-6">
-                                <input id="end_time" type="time" name="end_time" value="{{ old('end_time') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="end_time" type="time" name="end_time" value="{{ old('end_time') }}">
                             </div>
                         </div>
 
@@ -58,13 +40,7 @@
                             <label for="break_time" class="col-md-4 col-form-label text-md-right">{{ __('休憩時間') }}</label>
 
                             <div class="col-md-6">
-                                <input id="break_time" type="number" name="break_time" value="{{ old('break_time') }}" required autofocus>分
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="break_time" type="number" name="break_time" value="{{ old('break_time') }}">分
                             </div>
                         </div>
 

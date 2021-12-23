@@ -16,13 +16,8 @@
                             <label for="admin_code" class="col-md-4 col-form-label text-md-right">{{ __('管理者コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') ?? $admin->admin_code }}" required autofocus>
+                                <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') ?? $admin->admin_code }}">
 
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 
@@ -30,13 +25,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" name="name" value="{{ old('name') ?? $admin->name }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="name" type="text" name="name" value="{{ old('name') ?? $admin->name }}">
                             </div>
                         </div>
 
@@ -44,13 +33,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" name="email" value="{{ old('email') ?? $admin->email }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="email" type="text" name="email" value="{{ old('email') ?? $admin->email }}">
                             </div>
                         </div>
 
@@ -59,18 +42,12 @@
 
                             <div class="col-md-6">
                                 @if ($admin->role == 0)
-                                    <input id="role" type="radio" name="role" value="0" required checked>勤怠閲覧・編集可能
+                                    <input id="role" type="radio" name="role" value="0" checked>勤怠閲覧・編集可能
                                     <input id="role" type="radio" name="role" value="1">勤怠閲覧可能
                                 @elseif ($admin->role == 1)
-                                    <input id="role" type="radio" name="role" value="0" required>勤怠閲覧・編集可能
+                                    <input id="role" type="radio" name="role" value="0">勤怠閲覧・編集可能
                                     <input id="role" type="radio" name="role" value="1" checked>勤怠閲覧可能
                                 @endif
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
 

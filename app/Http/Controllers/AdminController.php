@@ -86,18 +86,20 @@ class AdminController extends Controller
         $admin_code_check = Admin::where('company_code', session('company_code'))->where('admin_code', $request->admin_code)->first();
 
         if (empty($admin_code_check)) {
-            $admin->company_code = session('company_code');
-            $admin->name = $request->name;
-            $admin->admin_code = $request->admin_code;
-            $admin->email = $request->email;
-            $admin->role = $request->role;
-            $admin->password = Hash::make($request->password);
-            $admin->delete_flg = 0;
-            $admin->save();
+            DB::transaction(function () use ($request, $admin) {
+                $admin->company_code = session('company_code');
+                $admin->name = $request->name;
+                $admin->admin_code = $request->admin_code;
+                $admin->email = $request->email;
+                $admin->role = $request->role;
+                $admin->password = Hash::make($request->password);
+                $admin->delete_flg = 0;
+                $admin->save();
+            });
             return redirect()->route('/company/home');
         } else {
             session()->flash('toastr', config('toastr.fail'));
-            return view('company.adminregister');
+            return redirect()->route('/adminregister');
         }
     }
 
@@ -138,17 +140,31 @@ class AdminController extends Controller
         $admin_code_check = Admin::where('company_code', session('company_code'))->where('admin_code', $request->admin_code)->first();
 
         if (empty($admin_code_check)) {
-            $admin = Admin::find($request->admin_id);
-            $admin->name = $request->name;
-            $admin->admin_code = $request->admin_code;
-            $admin->email = $request->email;
-            $admin->role = $request->role;
-            $admin->save();
+            DB::transaction(function () use ($request) {
+                $admin = Admin::find($request->admin_id);
+                $admin->name = $request->name;
+                $admin->admin_code = $request->admin_code;
+                $admin->email = $request->email;
+                $admin->role = $request->role;
+                $admin->save();
+            });
             return redirect()->route('/company/home');
         } else {
-            session()->flash('toastr', config('toastr.fail'));
             $admin = Admin::where('id', $request->admin_id)->first();
-            return view('company.adminregister', ['admin' => $admin]);
+            if ($admin->admin_code == $request->admin_code) {
+                DB::transaction(function () use ($request) {
+                    $admin = Admin::find($request->admin_id);
+                    $admin->name = $request->name;
+                    $admin->admin_code = $request->admin_code;
+                    $admin->email = $request->email;
+                    $admin->role = $request->role;
+                    $admin->save();
+                });
+                return redirect()->route('/company/home');
+            } else {
+                session()->flash('toastr', config('toastr.fail'));
+                return redirect(route('adminedit', ['id' => $request->admin_id]));
+            }
         }
     }
 
@@ -160,9 +176,11 @@ class AdminController extends Controller
      */
     public function destroy(Request $request)
     {
-        $admin = Admin::find($request->admin_id);
-        $admin->delete_flg = 1;
-        $admin->save();
+        DB::transaction(function () use ($request) {
+            $admin = Admin::find($request->admin_id);
+            $admin->delete_flg = 1;
+            $admin->save();
+        });
 
         session()->flash('toastr', config('toastr.delete_success'));
         return redirect()->route('/company/home');
