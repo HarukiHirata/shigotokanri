@@ -35,6 +35,10 @@
                     </td>
                 </tr>
                 @endforeach
+            @else
+                <tr>
+                    <td>管理者が登録されていません。</td>
+                </tr>
             @endif
         </tbody>
     </table>

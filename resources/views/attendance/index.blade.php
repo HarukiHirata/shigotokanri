@@ -55,6 +55,7 @@
                     <form method="post" action="/attendance/destroy/{{ $attendance->id }}">
                         @csrf
                         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
+                        <input type="hidden" name="transition" value="employee">
                         <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')">削除</button>
                     </form>
                 </td>

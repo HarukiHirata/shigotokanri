@@ -32,6 +32,7 @@ class AdminController extends Controller
                 session(['name' => $admin->name]);
                 session(['company_code' => $admin->company_code]);
                 session(['admin_code' => $admin->admin_code]);
+                session(['role' => $admin ->role]);
 
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/admin/home');
@@ -49,6 +50,7 @@ class AdminController extends Controller
         session()->forget('name');
         session()->forget('company_code');
         session()->forget('admin_code');
+        session()->forget('role');
         session()->flash('toastr', config('toastr.logout'));
         return redirect()->route('top');
     }
@@ -116,9 +118,10 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function edit(Admin $admin)
+    public function edit($id)
     {
-        //
+        $admin = Admin::where('id', $id)->first();
+        return view('company.adminedit', ['admin' => $admin]);
     }
 
     /**
@@ -130,7 +133,23 @@ class AdminController extends Controller
      */
     public function update(Request $request, Admin $admin)
     {
-        //
+        $this->validate($request, Admin::$rules);
+
+        $admin_code_check = Admin::where('company_code', session('company_code'))->where('admin_code', $request->admin_code)->first();
+
+        if (empty($admin_code_check)) {
+            $admin = Admin::find($request->admin_id);
+            $admin->name = $request->name;
+            $admin->admin_code = $request->admin_code;
+            $admin->email = $request->email;
+            $admin->role = $request->role;
+            $admin->save();
+            return redirect()->route('/company/home');
+        } else {
+            session()->flash('toastr', config('toastr.fail'));
+            $admin = Admin::where('id', $request->admin_id)->first();
+            return view('company.adminregister', ['admin' => $admin]);
+        }
     }
 
     /**
@@ -139,8 +158,13 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Admin $admin)
+    public function destroy(Request $request)
     {
-        //
+        $admin = Admin::find($request->admin_id);
+        $admin->delete_flg = 1;
+        $admin->save();
+
+        session()->flash('toastr', config('toastr.delete_success'));
+        return redirect()->route('/company/home');
     }
 }

@@ -62,15 +62,26 @@
                 <td>{{ $attendance->break_time }}分</td>
                 <td>{{ $attendance->working_hours }}時間</td>
                 <td>
-                    <button type="button" class="btn btn-info">
-                        <a href="/admin/attendance/edit/{{ $attendance->id }}" class="a-white">編集</a>
-                    </button>
+                    @if (session('role') == 0)
+                        <button type="button" class="btn btn-info">
+                            <a href="/admin/attendance/edit/{{ $attendance->id }}" class="a-white">編集</a>
+                        </button>
+                    @elseif (session('role') == 1)
+                        <button type="button" class="btn btn-info" disabled>
+                            <a tabindex="-1" class="a-white">編集</a>
+                        </button>
+                    @endif
                 </td>
                 <td>
                     <form method="post" action="/attendance/destroy/{{ $attendance->id }}">
                         @csrf
                         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')">削除</button>
+                        <input type="hidden" name="transition" value="admin">
+                        @if (session('role') == 0)
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')">削除</button>
+                        @elseif (session('role') == 1)
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('削除してよろしいですか')" disabled>削除</button>
+                        @endif
                     </form>
                 </td>
             </tr>

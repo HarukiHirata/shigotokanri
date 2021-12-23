@@ -49,6 +49,9 @@
                     </form>
                 </div>
             </div>
+            <p class="text-center">
+                <a href="/company/register">企業登録はこちら</a>
+            </p>
         </div>
     </div>
 </div>
