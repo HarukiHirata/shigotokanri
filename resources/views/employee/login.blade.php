@@ -15,13 +15,7 @@
                             <label for="company_code" class="col-md-4 col-form-label text-md-right">{{ __('企業コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="company_code" type="text" name="company_code" value="{{ old('company_code') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="company_code" type="text" name="company_code" value="{{ old('company_code') }}">
                             </div>
                         </div>
 
@@ -29,13 +23,7 @@
                             <label for="employee_code" class="col-md-4 col-form-label text-md-right">{{ __('従業員コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') }}">
                             </div>
                         </div>
 
@@ -43,13 +31,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('パスワード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-
-                                <!-- @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input id="password" type="password" class="form-control" name="password">
                             </div>
                         </div>
 
