@@ -182,8 +182,13 @@ class AttendanceController extends Controller
         $attendance->delete_flg = 1;
         $attendance->save();
 
-        session()->flash('toastr', config('toastr.delete_success'));
-        return redirect()->route('attendanceindex');
+        if ($request->transition == 'admin') {
+            session()->flash('toastr', config('toastr.delete_success'));
+            return redirect()->route('attendindexbycmp');
+        } elseif ($request->transition == 'employee') {
+            session()->flash('toastr', config('toastr.delete_success'));
+            return redirect()->route('attendindex');
+        }
     }
 
     public function destroybyemployeeid($employee_id) {

@@ -50,6 +50,14 @@
                         </li>
                     </ul>
                 </div>
+            @elseif (!empty(session('company_code')) && !empty(session('company_name')))
+                <div class="collapse navbar-collapse" id="toggleTarget">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item ml-auto">
+                            <a href="/company/logout" class="a-black mx-2">ログアウト</a>
+                        </li>
+                    </ul>
+                </div>
             @else
                 <div class="collapse navbar-collapse" id="toggleTarget">
                     <ul class="navbar-nav ml-auto">
