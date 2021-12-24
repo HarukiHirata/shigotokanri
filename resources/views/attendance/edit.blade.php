@@ -15,7 +15,7 @@
                             <label for="date" class="col-md-4 col-form-label text-md-right">{{ __('勤務日') }}</label>
 
                             <div class="col-md-6">
-                                <input id="date" type="date" name="date" value="{{ old('date') ?? $attendance->date }}">
+                                <input type="date" name="date" class="form-control" value="{{ old('date') ?? $attendance->date }}">
                             </div>
                         </div>
 
@@ -23,7 +23,7 @@
                             <label for="start_time" class="col-md-4 col-form-label text-md-right">{{ __('始業時間') }}</label>
 
                             <div class="col-md-6">
-                                <input id="start_time" type="time" name="start_time" value="{{ old('start_time') ?? $attendance->start_time }}">
+                                <input type="time" name="start_time" class="form-control" value="{{ old('start_time') ?? $attendance->start_time }}">
                             </div>
                         </div>
 
@@ -31,15 +31,15 @@
                             <label for="end_time" class="col-md-4 col-form-label text-md-right">{{ __('終業時間') }}</label>
 
                             <div class="col-md-6">
-                                <input id="end_time" type="time" name="end_time" value="{{ old('end_time') ?? $attendance->end_time }}">
+                                <input type="time" name="end_time" class="form-control" value="{{ old('end_time') ?? $attendance->end_time }}">
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="break_time" class="col-md-4 col-form-label text-md-right">{{ __('休憩時間') }}</label>
+                            <label for="break_time" class="col-md-4 col-form-label text-md-right">{{ __('休憩時間（分）') }}</label>
 
                             <div class="col-md-6">
-                                <input id="break_time" type="number" name="break_time" value="{{ old('break_time') ?? $attendance->break_time }}">分
+                                <input type="number" name="break_time" class="form-control" value="{{ old('break_time') ?? $attendance->break_time }}">
                             </div>
                         </div>
 

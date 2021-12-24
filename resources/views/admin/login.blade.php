@@ -15,7 +15,7 @@
                             <label for="company_code" class="col-md-4 col-form-label text-md-right">{{ __('企業コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="company_code" type="text" name="company_code" value="{{ old('company_code') }}">
+                                <input type="text" name="company_code" class="form-control" value="{{ old('company_code') }}">
                             </div>
                         </div>
 
@@ -23,7 +23,7 @@
                             <label for="admin_code" class="col-md-4 col-form-label text-md-right">{{ __('管理者コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="admin_code" type="text" name="admin_code" value="{{ old('admin_code') }}">
+                                <input type="text" name="admin_code" class="form-control" value="{{ old('admin_code') }}">
                             </div>
                         </div>
 
@@ -31,7 +31,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('パスワード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password">
+                                <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                             </div>
                         </div>
 

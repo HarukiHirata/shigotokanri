@@ -16,7 +16,7 @@
                             <label for="employee_code" class="col-md-4 col-form-label text-md-right">{{ __('従業員コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') }}">
+                                <input type="text" name="employee_code" class="form-control" value="{{ old('employee_code') }}">
                             </div>
                         </div>
 
@@ -24,7 +24,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" name="name" value="{{ old('name') }}">
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             </div>
                         </div>
 
@@ -32,7 +32,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" name="email" value="{{ old('email') }}">
+                                <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                             </div>
                         </div>
 
@@ -40,7 +40,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('初期パスワード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" name="password" value="{{ old('password') }}" placeholder="8文字以上で入力してください">
+                                <input type="password" name="password" class="form-control" value="{{ old('password') }}" placeholder="8文字以上で入力してください">
                             </div>
                         </div>
 

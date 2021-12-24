@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AdminController;
+use App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -65,28 +66,20 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        $this->validate($request, Company::$rules);
-
-        $company = new Company;
-
-        $company_code_check = Company::where('company_code', $request->company_code)->first();
-
-        if (empty($company_code_check)) {
+        DB::transaction(function () use ($request) {
+            $company = new Company;
             $company->company_code = $request->company_code;
             $company->name = $request->name;
             $company->email = $request->email;
             $company->password = Hash::make($request->password);
             $company->save();
-            session(['company_code' => $company->company_code]);
-            session(['company_name' => $company->name]);
-            session()->flash('toastr', config('toastr.success'));
-            return redirect()->route('/company/home');
-        } else {
-            session()->flash('toastr', config('toastr.fail'));
-            return view('company.register');
-        }
+        });
+        session(['company_code' => $request->company_code]);
+        session(['company_name' => $request->name]);
+        session()->flash('toastr', config('toastr.success'));
+        return redirect()->route('/company/home');
     }
 
     /**

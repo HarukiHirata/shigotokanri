@@ -6,6 +6,7 @@ use App\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\AdminRequest;
 
 class AdminController extends Controller
 {
@@ -77,30 +78,20 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AdminRequest $request)
     {
-        $this->validate($request, Admin::$rules);
-
-        $admin = new Admin;
-
-        $admin_code_check = Admin::where('company_code', session('company_code'))->where('admin_code', $request->admin_code)->first();
-
-        if (empty($admin_code_check)) {
-            DB::transaction(function () use ($request, $admin) {
-                $admin->company_code = session('company_code');
-                $admin->name = $request->name;
-                $admin->admin_code = $request->admin_code;
-                $admin->email = $request->email;
-                $admin->role = $request->role;
-                $admin->password = Hash::make($request->password);
-                $admin->delete_flg = 0;
-                $admin->save();
-            });
-            return redirect()->route('/company/home');
-        } else {
-            session()->flash('toastr', config('toastr.fail'));
-            return redirect()->route('/adminregister');
-        }
+        DB::transaction(function () use ($request) {
+            $admin = new Admin;
+            $admin->company_code = session('company_code');
+            $admin->name = $request->name;
+            $admin->admin_code = $request->admin_code;
+            $admin->email = $request->email;
+            $admin->role = $request->role;
+            $admin->password = Hash::make($request->password);
+            $admin->delete_flg = 0;
+            $admin->save();
+        });
+        return redirect()->route('/company/home');
     }
 
     /**
@@ -133,39 +124,17 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Admin $admin)
+    public function update(AdminRequest $request, Admin $admin)
     {
-        $this->validate($request, Admin::$rules);
-
-        $admin_code_check = Admin::where('company_code', session('company_code'))->where('admin_code', $request->admin_code)->first();
-
-        if (empty($admin_code_check)) {
-            DB::transaction(function () use ($request) {
-                $admin = Admin::find($request->admin_id);
-                $admin->name = $request->name;
-                $admin->admin_code = $request->admin_code;
-                $admin->email = $request->email;
-                $admin->role = $request->role;
-                $admin->save();
-            });
-            return redirect()->route('/company/home');
-        } else {
-            $admin = Admin::where('id', $request->admin_id)->first();
-            if ($admin->admin_code == $request->admin_code) {
-                DB::transaction(function () use ($request) {
-                    $admin = Admin::find($request->admin_id);
-                    $admin->name = $request->name;
-                    $admin->admin_code = $request->admin_code;
-                    $admin->email = $request->email;
-                    $admin->role = $request->role;
-                    $admin->save();
-                });
-                return redirect()->route('/company/home');
-            } else {
-                session()->flash('toastr', config('toastr.fail'));
-                return redirect(route('adminedit', ['id' => $request->admin_id]));
-            }
-        }
+        DB::transaction(function () use ($request) {
+            $admin = Admin::find($request->admin_id);
+            $admin->name = $request->name;
+            $admin->admin_code = $request->admin_code;
+            $admin->email = $request->email;
+            $admin->role = $request->role;
+            $admin->save();
+        });
+        return redirect()->route('/company/home');
     }
 
     /**
