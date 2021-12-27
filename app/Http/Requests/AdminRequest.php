@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Admin;
 
 class AdminRequest extends FormRequest
 {
@@ -25,7 +24,6 @@ class AdminRequest extends FormRequest
      */
     public function rules()
     {
-        $companyCode = session('company_code');
         return [
             'admin_code' => [
                 'required',
@@ -42,6 +40,7 @@ class AdminRequest extends FormRequest
         return [
             'admin_code.required' => '管理者コードは必須項目です。',
             'admin_code.unique' => '入力された管理者コードは企業内で既に使用されています。',
+            'name.required' => '氏名は必須項目です。',
             'email.required' => 'メールアドレスは必須項目です。',
             'email.email' => '正しいメールアドレスの形式で入力してください。',
             'role.required' => '権限は必須項目です。',

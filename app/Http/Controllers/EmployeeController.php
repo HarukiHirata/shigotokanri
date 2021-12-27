@@ -6,6 +6,7 @@ use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\EmployeeRequest;
 use App\Http\Controllers\AttendanceController;
 
 class EmployeeController extends Controller
@@ -83,35 +84,21 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmployeeRequest $request)
     {
-        // バリデーション
-        $this->validate($request, Employee::$rules);
+        DB::transaction(function () use ($request) {
+            $employee = new Employee;
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->company_code = session('company_code');
+            $employee->email = $request->email;
+            $employee->password = Hash::make($request->password);
+            $employee->delete_flg = 0;
+            $employee->save();
+        });
 
-        // インスタンス生成
-        $employee = new Employee;
-
-        // 従業員コードにダブりがないかチェック。
-        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
-
-        if (empty($employee_code_check)) {
-            DB::transaction(function () use ($request) {
-                $employee->name = $request->name;
-                $employee->employee_code = $request->employee_code;
-                $employee->company_code = session('company_code');
-                $employee->email = $request->email;
-                $employee->password = Hash::make($request->password);
-                $employee->delete_flg = 0;
-                $employee->save();
-            });
-
-            // 登録成功のメッセージをセッションに保存して従業員一覧画面へ遷移。
-            session()->flash('toastr', config('toastr.success'));
-            return redirect()->route('employeeindex');
-        } else {
-            session()->flash('toastr', config('toastr.fail'));
-            return view('admin.employeeregister');
-        }
+        session()->flash('toastr', config('toastr.success'));
+        return redirect()->route('employeeindex');
     }
 
     /**
@@ -144,41 +131,18 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
-    {
-        $this->validate($request, Employee::$rules);
+    public function update(EmployeeRequest $request, Employee $employee)
+    {        
+        DB::transaction(function () use ($request) {
+            $employee = Employee::find($request->employee_id);
+            $employee->name = $request->name;
+            $employee->employee_code = $request->employee_code;
+            $employee->email = $request->email;
+            $employee->save();
+        });
 
-        $employee_code_check = Employee::where('company_code', session('company_code'))->where('employee_code', $request->employee_code)->first();
-        
-        if (empty($employee_code_check)) {
-            DB::transaction(function () use ($request) {
-                $employee = Employee::find($request->employee_id);
-                $employee->name = $request->name;
-                $employee->employee_code = $request->employee_code;
-                $employee->email = $request->email;
-                $employee->save();
-            });
-
-            session()->flash('toastr', config('toastr.success'));
-            return redirect()->route('employeeindex');
-        } else {
-            $employee = Employee::where('id', $request->employee_id)->first();
-            if ($employee->employee_code == $request->employee_code) {
-                DB::transaction(function () use ($request) {
-                    $employee = Employee::find($request->employee_id);
-                    $employee->name = $request->name;
-                    $employee->employee_code = $request->employee_code;
-                    $employee->email = $request->email;
-                    $employee->save();
-                });
-
-                session()->flash('toastr', config('toastr.success'));
-                return redirect()->route('employeeindex');
-            } else {
-                session()->flash('toastr', config('toastr.fail'));
-                return redirect(route('employeeedit', ['id' => $request->employee_id]));
-            }
-        }
+        session()->flash('toastr', config('toastr.success'));
+        return redirect()->route('employeeindex');
     }
 
     /**

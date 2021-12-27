@@ -34,3 +34,8 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.small-form {
+    width: 90%;
+    display: inline-block;
+}

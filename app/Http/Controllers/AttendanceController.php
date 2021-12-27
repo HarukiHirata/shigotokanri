@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Attendance;
 use Illuminate\Http\Request;
-use Illuminate\Http\Facades\DB;
-use Illuminate\Http\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Http\Requests\AttendanceRequest;
 use App\Http\Controllers\EmployeeController;
 
 class AttendanceController extends Controller
@@ -68,7 +69,11 @@ class AttendanceController extends Controller
     // 勤怠登録画面
     public function create()
     {
-        return view('attendance.create');  
+        $today = Carbon::today('Asia/Tokyo');
+        $year = $today->format('Y');
+        $month = $today->format('m');
+        $day = $today->format('d');
+        return view('attendance.create', ['year' => $year, 'month' => $month, 'day' => $day]);  
     }
 
     /**
@@ -78,26 +83,25 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
     // 勤怠登録機能
-    public function store(Request $request)
-    {
-        // バリデーション
-        $this->validate($request, Attendance::$rules);
-        
+    public function store(AttendanceRequest $request)
+    {   
         DB::transaction(function () use ($request) {
             // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
             $attendance = new Attendance;
-            $date = new Carbon($request->date);
-            $time1 = new Carbon($request->start_time);
-            $time2 = new Carbon($request->end_time);
-            $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
+            $date = Carbon::createFromDate($request->year, $request->month, $request->day);
+            $start_time = Carbon::create($request->year, $request->month, $request->day, $request->start_time_h, $request->start_time_m, 00);
+            $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
+            $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
+
+            dd($date);
 
             // データをインスタンスのプロパティに入れてDBへ保存。
             $attendance->employee_id = session('employee_id');
             $attendance->company_code = session('company_code');
-            $attendance->date = $date;
+            $attendance->date = $date>format('Y-m-d');
             $attendance->month = $date->format('Y-m');
-            $attendance->start_time = $time1;
-            $attendance->end_time = $time2;
+            $attendance->start_time = $start_time->format('H:m');
+            $attendance->end_time = $end_time->format('H:m');
             $attendance->working_hours = $working_hours;
             $attendance->break_time = $request->break_time;
             $attendance->delete_flg = 0;

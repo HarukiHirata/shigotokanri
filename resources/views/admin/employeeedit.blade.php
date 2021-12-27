@@ -20,6 +20,9 @@
 
                             </div>
                         </div>
+                        @error('employee_code')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
@@ -28,6 +31,9 @@
                                 <input type="text" name="name" class="form-control" value="{{ old('name') ?? $employee->name }}">
                             </div>
                         </div>
+                        @error('name')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
@@ -36,6 +42,9 @@
                                 <input type="text" name="email" class="form-control" value="{{ old('email') ?? $employee->email }}">
                             </div>
                         </div>
+                        @error('email')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
 

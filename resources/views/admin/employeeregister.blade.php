@@ -19,6 +19,9 @@
                                 <input type="text" name="employee_code" class="form-control" value="{{ old('employee_code') }}">
                             </div>
                         </div>
+                        @error('employee_code')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
@@ -27,6 +30,9 @@
                                 <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             </div>
                         </div>
+                        @error('name')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
@@ -35,14 +41,20 @@
                                 <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                             </div>
                         </div>
+                        @error('email')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('初期パスワード') }}</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('パスワード') }}</label>
 
                             <div class="col-md-6">
                                 <input type="password" name="password" class="form-control" value="{{ old('password') }}" placeholder="8文字以上で入力してください">
                             </div>
                         </div>
+                        @error('password')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
