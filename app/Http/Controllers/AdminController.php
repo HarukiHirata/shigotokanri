@@ -18,18 +18,13 @@ class AdminController extends Controller
 
     public function adminlogin(Request $request)
     {
-        // 管理者テーブル参照
         $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->first();
 
         if (empty($admin)) {
-            // 入力された企業コードの中で一致する管理者コードがない場合、メッセージをセッションに格納してログイン画面にリダイアル。
             session()->flash('toastr', config('toastr.loginfail'));
             return back()->withInput()->with(['login_error' => '企業コードもしくは管理者コードが間違っています。']);
         } else {
-            // 入力された企業コードの中で一致する管理者コードがあった場合パスワードチェック
             if (Hash::check($request->password, $admin->password)) {
-                // パスワード一致
-                // セッションにログインユーザーの情報・メッセージを格納
                 session(['name' => $admin->name]);
                 session(['company_code' => $admin->company_code]);
                 session(['admin_code' => $admin->admin_code]);
@@ -38,7 +33,6 @@ class AdminController extends Controller
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/admin/home');
             } else {
-                // パスワード不一致の場合はメッセージをセッションに格納してログイン画面にリダイアル。
                 session()->flash('toastr', config('toastr.loginfail'));
                 return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
@@ -47,7 +41,6 @@ class AdminController extends Controller
 
     public function adminlogout()
     {
-        // セッション削除してトップ画面へリダイアル。
         session()->forget('name');
         session()->forget('company_code');
         session()->forget('admin_code');
@@ -92,17 +85,6 @@ class AdminController extends Controller
             $admin->save();
         });
         return redirect()->route('/company/home');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Admin $admin)
-    {
-        //
     }
 
     /**

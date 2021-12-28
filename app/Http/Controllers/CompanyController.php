@@ -11,16 +11,6 @@ use App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     public function companylogin(Request $request) {
         $company = Company::where('company_code', $request->company_code)->first();
 
@@ -80,50 +70,5 @@ class CompanyController extends Controller
         session(['company_name' => $request->name]);
         session()->flash('toastr', config('toastr.success'));
         return redirect()->route('/company/home');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Company $company)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Company $company)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Company $company)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Company $company)
-    {
-        //
     }
 }

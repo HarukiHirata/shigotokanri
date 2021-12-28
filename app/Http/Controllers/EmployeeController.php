@@ -19,18 +19,13 @@ class EmployeeController extends Controller
 
     public function emplogin(Request $request)
     {
-        // 従業員テーブル参照
         $employee = Employee::where('company_code', $request->company_code)->where('employee_code', $request->employee_code)->first();
 
         if (empty($employee)) {
-            // 入力された企業コードの中で一致する従業員コードがなかったり、入力された企業コードが存在しなかったりする場合、メッセージをセッションに格納してログイン画面にリダイアル。
             session()->flash('toastr', config('toastr.loginfail'));
             return back()->withInput()->with(['login_error' => '企業コードもしくは従業員コードが間違っています。']);
         } else {
-            // 入力された企業コードの中で一致する従業員コードがあった場合パスワードチェック
             if (Hash::check($request->password, $employee->password)) {
-                // パスワード一致
-                // セッションにログインユーザーの情報・メッセージを格納
                 session(['employee_id' => $employee->id]);
                 session(['name' => $employee->name]);
                 session(['company_code' => $employee->company_code]);
@@ -39,7 +34,6 @@ class EmployeeController extends Controller
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/employee/home');
             } else {
-                // パスワード不一致の場合はメッセージをセッションに格納してログイン画面にリダイアル。
                 session()->flash('toastr', config('toastr.loginfail'));
                 return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
@@ -48,7 +42,6 @@ class EmployeeController extends Controller
 
     public function emplogout()
     {
-        // セッション削除してトップ画面ヘリダイアル。
         session()->forget('employee_id');
         session()->forget('name');
         session()->forget('company_code');
@@ -99,17 +92,6 @@ class EmployeeController extends Controller
 
         session()->flash('toastr', config('toastr.success'));
         return redirect()->route('employeeindex');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Employee $employee)
-    {
-        //
     }
 
     /**

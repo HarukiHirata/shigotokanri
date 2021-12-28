@@ -13,7 +13,7 @@ class Attendance extends Model
         parent::boot();
 
         static::addGlobalScope('delete_flg', function (Builder $builder) {
-            $builder->where('delete_flg', 0);
+            $builder->where('delete_flg', 0)->orderBy('date', 'asc');
         });
     }
     

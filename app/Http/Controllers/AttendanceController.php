@@ -87,7 +87,6 @@ class AttendanceController extends Controller
     {
         if (checkdate($request->month, $request->day, $request->year)) {
             DB::transaction(function () use ($request) {
-                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
                 $attendance = new Attendance;
                 $date = $request->year.'-'.$request->month.'-'.$request->day;
                 $month = $request->year.'-'.$request->month;
@@ -95,8 +94,6 @@ class AttendanceController extends Controller
                 $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
                 $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
     
-    
-                // データをインスタンスのプロパティに入れてDBへ保存。
                 $attendance->employee_id = session('employee_id');
                 $attendance->company_code = session('company_code');
                 $attendance->date = $date;
@@ -109,23 +106,11 @@ class AttendanceController extends Controller
                 $attendance->save();
             });
     
-            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
             session()->flash('toastr', config('toastr.success'));
             return redirect()->route('/employee/home');
         } else {
             return back()->withInput()->with(['date_error' => '無効な日付です。']);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Attendance  $attendance
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Attendance $attendance)
-    {
-        //
     }
 
     /**
@@ -196,7 +181,6 @@ class AttendanceController extends Controller
     {
         if (checkdate($request->month, $request->day, $request->year)) {
             DB::transaction(function () use ($request) {
-                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
                 $attendance = Attendance::find($request->attendance_id);
                 $date = $request->year.'-'.$request->month.'-'.$request->day;
                 $month = $request->year.'-'.$request->month;
@@ -204,7 +188,6 @@ class AttendanceController extends Controller
                 $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
                 $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
     
-                // データをインスタンスのプロパティに入れてDBへ保存。
                 $attendance->date = $date;
                 $attendance->month = $month;
                 $attendance->start_time = $start_time->format('H:i');
@@ -214,7 +197,6 @@ class AttendanceController extends Controller
                 $attendance->save();
             });
     
-            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
             if ($request->transition == 'admin') {
                 session()->flash('toastr', config('toastr.success'));
                 return redirect()->route('attendindexbycmp');
