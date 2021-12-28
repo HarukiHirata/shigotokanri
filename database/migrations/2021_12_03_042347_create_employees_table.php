@@ -21,8 +21,6 @@ class CreateEmployeesTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('delete_flg');
-
-            $table->foreign('company_code')->references('company_code')->on('companies');
         });
     }
 

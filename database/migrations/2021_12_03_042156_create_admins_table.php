@@ -20,8 +20,6 @@ class CreateAdminsTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('role');
-
-            $table->foreign('company_code')->references('company_code')->on('companies');
         });
     }
 

@@ -12,61 +12,79 @@
                     <form method="POST" action="/employee/attendance/store">
                         @csrf
 
-                        <div class="form-group row">
-                            <label for="date" class="col-md-4 col-form-label text-md-right">{{ __('勤務日') }}</label>
+                        <div class="form-row justify-content-center">
+                            <label class="col-form-label text-md-right">勤務日</label>
+                            <div class="form-group col-md-3">
+                                <input type="number" name="year" class="form-control small-form" value="{{ old('year') ?? $year }}">年
+                            </div>
 
-                            <div class="col-md-6">
-                                <input id="date" type="date" name="date" value="{{ old('date') }}" required autofocus>
+                            <div class="form-group col-md-3">
+                                <input type="number" name="month" class="form-control small-form" value="{{ old('month') ?? $month }}">月
+                            </div>
 
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                            <div class="form-group col-md-3">
+                                <input type="number" name="day" class="form-control small-form" value="{{ old('day') ?? $day }}">日
                             </div>
                         </div>
+                        @error('year')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
+                        @error('month')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
+                        @error('day')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
+                        @if (session('date_error'))
+                            <p class="text-center">{{ session('date_error') }}</p>
+                        @endif
 
-                        <div class="form-group row">
-                            <label for="start_time" class="col-md-4 col-form-label text-md-right">{{ __('始業時間') }}</label>
+                        <div class="form-row justify-content-center">
+                            <label class="col-form-label text-md-right">始業時間</label>
 
-                            <div class="col-md-6">
-                                <input id="start_time" type="time" name="start_time" value="{{ old('start_time') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                            <div class="form-group col-md-5">
+                                <input type="number" name="start_time_h" class="form-control small-form" value="{{ old('start_time_h') }}">時
+                            </div>
+                            <div class="form-group col-md-5">
+                                <input type="number" name="start_time_m" class="form-control small-form" value="{{ old('start_time_m') }}">分
                             </div>
                         </div>
+                        @error('start_time_h')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
+                        @error('start_time_m')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
-                        <div class="form-group row">
-                            <label for="end_time" class="col-md-4 col-form-label text-md-right">{{ __('終業時間') }}</label>
+                        <div class="form-row justify-content-center">
+                            <label class="col-form-label text-md-right">終業時間</label>
 
-                            <div class="col-md-6">
-                                <input id="end_time" type="time" name="end_time" value="{{ old('end_time') }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                            <div class="form-group col-md-5">
+                                <input type="number" name="end_time_h" class="form-control small-form" value="{{ old('end_time_h') }}">時
+                            </div>
+                            <div class="form-group col-md-5">
+                                <input type="number" name="end_time_m" class="form-control small-form" value="{{ old('end_time_m') }}">分
                             </div>
                         </div>
+                        @error('end_time_h')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
+                        @error('end_time_m')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
-                        <div class="form-group row">
-                            <label for="break_time" class="col-md-4 col-form-label text-md-right">{{ __('休憩時間') }}</label>
+                        <div class="justify-content-center">
+                            <div class="form-group row">
+                                <label for="break_time" class="col-md-4 col-form-label text-md-right">{{ __('休憩時間') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="break_time" type="number" name="break_time" value="{{ old('break_time') }}" required autofocus>分
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <div class="col-md-4 form-inline">
+                                    <input type="number" name="break_time" class="form-control" value="{{ old('break_time') }}">分
+                                </div>
                             </div>
                         </div>
+                        @error('break_time')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">

@@ -93,5 +93,4 @@
         @endif
     </tbody>
 </table>
-<a href="/admin/home">ホーム画面へ</a>
 @endsection

@@ -16,47 +16,39 @@
                             <label for="employee_code" class="col-md-4 col-form-label text-md-right">{{ __('従業員コード') }}</label>
 
                             <div class="col-md-6">
-                                <input id="employee_code" type="text" name="employee_code" value="{{ old('employee_code') ?? $employee->employee_code }}" required autofocus>
+                                <input type="text" name="employee_code" class="form-control" value="{{ old('employee_code') ?? $employee->employee_code }}">
 
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
                             </div>
                         </div>
+                        @error('employee_code')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('氏名') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" name="name" value="{{ old('name') ?? $employee->name }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input type="text" name="name" class="form-control" value="{{ old('name') ?? $employee->name }}">
                             </div>
                         </div>
+                        @error('name')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('メールアドレス') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" name="email" value="{{ old('email') ?? $employee->email }}" required autofocus>
-
-                                <!-- @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror -->
+                                <input type="text" name="email" class="form-control" value="{{ old('email') ?? $employee->email }}">
                             </div>
                         </div>
+                        @error('email')
+                            <p class="text-center">{{ $message }}</p>
+                        @enderror
 
-                        <input id="employee_id" type="hidden" name="employee_id" value="{{ $employee->id }}">
+                        <input type="hidden" name="employee_id" value="{{ $employee->id }}">
 
-                        <input id="password" type="hidden" name="password" value="{{ $employee->password }}">
+                        <input type="hidden" name="password" value="{{ $employee->password }}">
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">

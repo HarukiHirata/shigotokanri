@@ -16,11 +16,4 @@ class Admin extends Model
             $builder->where('delete_flg', 0);
         });
     }
-
-    public static $rules = array(
-        'admin_code' => 'required',
-        'name' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:8',
-    );
 }
