@@ -25,4 +25,8 @@ return [
         'type' => 'info',
         'text' => 'ログアウトしました。',
     ],
+    'needlogin' => [
+        'type' => 'warning',
+        'text' => 'ログインが必要です。',
+    ],
 ];

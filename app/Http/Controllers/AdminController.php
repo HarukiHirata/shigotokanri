@@ -15,13 +15,12 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
+    // 管理者用ログイン処理
     public function adminlogin(Request $request)
     {
         $admin = Admin::where('company_code', $request->company_code)->where('admin_code', $request->admin_code)->first();
 
         if (empty($admin)) {
-            session()->flash('toastr', config('toastr.loginfail'));
             return back()->withInput()->with(['login_error' => '企業コードもしくは管理者コードが間違っています。']);
         } else {
             if (Hash::check($request->password, $admin->password)) {
@@ -29,26 +28,29 @@ class AdminController extends Controller
                 session(['company_code' => $admin->company_code]);
                 session(['admin_code' => $admin->admin_code]);
                 session(['role' => $admin ->role]);
+                session(['login_token' => str_random(6)]);
 
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/admin/home');
             } else {
-                session()->flash('toastr', config('toastr.loginfail'));
                 return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
         } 
     }
 
+    // 管理者用ログアウト処理
     public function adminlogout()
     {
         session()->forget('name');
         session()->forget('company_code');
         session()->forget('admin_code');
         session()->forget('role');
+        session()->forget('login_token');
         session()->flash('toastr', config('toastr.logout'));
         return redirect()->route('top');
     }
-
+    
+    // 管理者一覧表示
     public function index()
     {
         $admins = Admin::where('company_code', session('company_code'))->get();
@@ -60,6 +62,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // 管理者登録画面遷移処理
     public function create()
     {
         return view('company.adminregister');
@@ -71,6 +74,7 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // 管理者登録処理
     public function store(AdminRequest $request)
     {
         DB::transaction(function () use ($request) {
@@ -93,6 +97,7 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
+    // 管理者情報編集画面遷移処理
     public function edit($id)
     {
         $admin = Admin::where('id', $id)->first();
@@ -106,6 +111,7 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
+    // 管理者情報更新処理
     public function update(AdminRequest $request, Admin $admin)
     {
         DB::transaction(function () use ($request) {
@@ -125,6 +131,7 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
+    // 管理者情報削除処理
     public function destroy(Request $request)
     {
         DB::transaction(function () use ($request) {

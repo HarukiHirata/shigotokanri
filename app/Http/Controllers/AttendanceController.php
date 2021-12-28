@@ -18,12 +18,12 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    // 従業員用の勤怠一覧
+    // 従業員用の勤怠一覧表示画面遷移処理
     public function index() {
         return view('attendance.index');
     }
 
-    // 従業員用の勤怠検索メソッド
+    // 従業員用の勤怠検索処理
     public function search(Request $request) {
         if (!empty($request->search_month)) {
             $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $request->search_month)->get();
@@ -37,7 +37,7 @@ class AttendanceController extends Controller
         return view('attendance.index', ['attendances' => $attendances, 'nullmessage' => $nullmessage]);
     }
 
-    // 管理者用の勤怠一覧
+    // 管理者用の勤怠一覧表示画面遷移処理
     public function companyindex()
     {
         $employee = new EmployeeController;
@@ -45,7 +45,7 @@ class AttendanceController extends Controller
         return view('attendance.companyindex', ['employees' => $employees]);
     }
 
-    //  管理者用の勤怠検索メソッド
+    //  管理者用の勤怠検索処理
     public function searchforadmin(Request $request) {
         if (!empty($request->employee_id) && !empty($request->search_month)) {
             $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->where('month', $request->search_month)->get();
@@ -70,7 +70,7 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // 勤怠登録画面
+    // 勤怠登録画面遷移処理
     public function create()
     {
         return view('attendance.create');  
@@ -82,7 +82,7 @@ class AttendanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // 勤怠登録機能
+    // 勤怠登録機能遷移処理
     public function store(AttendanceRequest $request)
     {
         if (checkdate($request->month, $request->day, $request->year)) {
@@ -119,7 +119,7 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 従業員用の勤怠編集画面
+    // 従業員用の勤怠編集画面遷移処理
     public function edit($id)
     {
         $attendance = Attendance::where('id', $id)->first();
@@ -145,7 +145,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 管理者用の勤怠編集画面
+    // 管理者用の勤怠編集画面遷移処理
     public function editforadmin($id) {
         $attendance = Attendance::with('employee')->where('id', $id)->first();
         $date = explode("-", $attendance->date);
@@ -176,7 +176,7 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 勤怠更新機能（従業員・管理者用の画面で共通）
+    // 勤怠更新処理（従業員・管理者用の画面で共通）
     public function update(AttendanceRequest $request, Attendance $attendance)
     {
         if (checkdate($request->month, $request->day, $request->year)) {
@@ -215,7 +215,7 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 勤怠履歴削除機能（従業員・管理者用の画面で共通）
+    // 勤怠履歴削除処理（従業員・管理者用の画面で共通）
     public function destroy(Request $request)
     {
         DB::transaction(function () use ($request) {
@@ -233,6 +233,7 @@ class AttendanceController extends Controller
         }
     }
 
+    // 勤怠履歴削除処理（従業員情報が削除された場合にその従業員の勤怠履歴を削除）
     public function destroybyemployeeid($employee_id) {
         DB::transaction(function () use ($employee_id) {
             Attendance::where('employee_id', $employee_id)->update(['delete_flg' => 1]);

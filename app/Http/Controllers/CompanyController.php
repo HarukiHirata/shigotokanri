@@ -11,31 +11,30 @@ use App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
+    // 企業設定画面へのログイン処理
     public function companylogin(Request $request) {
         $company = Company::where('company_code', $request->company_code)->first();
 
         if (empty($company)) {
-            session()->flash('toastr', config('toastr.loginfail'));
             return back()->withInput()->with(['login_error' => '企業コードが間違っています。']);
         } else {
             if (Hash::check($request->password, $company->password)) {
                 session(['company_code' => $company->company_code]);
                 session(['company_name' => $company->name]);
+                session(['login_token' => str_random(6)]);
                 session()->flash('toastr', config('toastr.loginsuccess'));
                 return redirect()->route('/company/home');
             } else {
-                session()->flash('toastr', config('toastr.loginfail'));
                 return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
         }
     }
-
+    
+    // 企業設定画面からのログアウト処理
     public function companylogout() {
         session()->forget('company_code');
         session()->forget('company_name');
-        if (!empty(session('admins'))) {
-            session()->forget('admins');
-        }
+        session()->forget('login_token');
         session()->flash('toastr', config('toastr.logout'));
         return redirect()->route('top');
     }
@@ -45,6 +44,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // 企業登録画面遷移処理
     public function create()
     {
         return view('company.register');
@@ -56,6 +56,7 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // 企業登録処理
     public function store(CompanyRequest $request)
     {
         DB::transaction(function () use ($request) {
@@ -68,6 +69,7 @@ class CompanyController extends Controller
         });
         session(['company_code' => $request->company_code]);
         session(['company_name' => $request->name]);
+        session(['login_token' => str_random(6)]);
         session()->flash('toastr', config('toastr.success'));
         return redirect()->route('/company/home');
     }
