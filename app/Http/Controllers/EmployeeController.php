@@ -25,7 +25,7 @@ class EmployeeController extends Controller
         if (empty($employee)) {
             // 入力された企業コードの中で一致する従業員コードがなかったり、入力された企業コードが存在しなかったりする場合、メッセージをセッションに格納してログイン画面にリダイアル。
             session()->flash('toastr', config('toastr.loginfail'));
-            return redirect()->route('/employee/login');
+            return back()->withInput()->with(['login_error' => '企業コードもしくは従業員コードが間違っています。']);
         } else {
             // 入力された企業コードの中で一致する従業員コードがあった場合パスワードチェック
             if (Hash::check($request->password, $employee->password)) {
@@ -41,7 +41,7 @@ class EmployeeController extends Controller
             } else {
                 // パスワード不一致の場合はメッセージをセッションに格納してログイン画面にリダイアル。
                 session()->flash('toastr', config('toastr.loginfail'));
-                return redirect()->route('/employee/login');
+                return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
         } 
     }

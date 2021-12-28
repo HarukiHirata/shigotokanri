@@ -21,27 +21,27 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/admin/login', function() {
     return view('/admin/login');
-})->name('/admin/login');
+});
 
-Route::post('/admin/login', 'AdminController@adminlogin')->name('adminlogin');
+Route::post('/admin/login', 'AdminController@adminlogin');
 
 Route::get('/admin/home', function() {
     return view('/admin/home');
 })->name('/admin/home');
 
-Route::get('/admin/logout', 'AdminController@adminlogout')->name('adminlogout');
+Route::get('/admin/logout', 'AdminController@adminlogout');
 
 Route::get('/employee/login', function() {
     return view('/employee/login');
-})->name('/employee/login');
+});
 
-Route::post('/employee/login', 'EmployeeController@emplogin')->name('emplogin');
+Route::post('/employee/login', 'EmployeeController@emplogin');
 
 Route::get('/employee/home', function() {
     return view('/employee/home');
 })->name('/employee/home');
 
-Route::get('/employee/logout', 'EmployeeController@emplogout')->name('emplogout');
+Route::get('/employee/logout', 'EmployeeController@emplogout');
 
 Route::get('/employee/attendance/create', 'AttendanceController@create');
 Route::post('/employee/attendance/store', 'AttendanceController@store');
@@ -64,8 +64,8 @@ Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');
 
 Route::get('/company/login', function() {
     return view('company.login');
-})->name('/company/login');
-Route::post('/company/login', 'CompanyController@companylogin')->name('companylogin');
+});
+Route::post('/company/login', 'CompanyController@companylogin');
 Route::get('/company/home', 'AdminController@index')->name('/company/home');
 Route::get('/company/logout', 'CompanyController@companylogout');
 

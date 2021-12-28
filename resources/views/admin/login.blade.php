@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('管理者ログイン') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('adminlogin') }}">
+                    <form method="POST" action="/admin/login">
                         @csrf
 
                         <div class="form-group row">
@@ -34,6 +34,9 @@
                                 <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                             </div>
                         </div>
+                        @if (session('login_error'))
+                            <p class="text-center">{{ session('login_error') }}
+                        @endif
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">

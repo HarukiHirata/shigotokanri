@@ -47,12 +47,16 @@ class AttendanceController extends Controller
 
     //  管理者用の勤怠検索メソッド
     public function searchforadmin(Request $request) {
-        $nullmessage = '';
-        if (!empty($request->employee_id)) {
+        if (!empty($request->employee_id) && !empty($request->search_month)) {
             $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->where('month', $request->search_month)->get();
-        } else {
+        } elseif (!empty($request->employee_id) && empty($request->search_month)) {
+            $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->get();
+        } elseif (empty($request->employee_id) && !empty($request->search_month)) {
             $attendances = Attendance::with('employee')->where('company_code', session('company_code'))->where('month', $request->search_month)->get();
+        } else {
+            $attendances = Attendance::with('employee')->where('company_code', session('company_code'))->get();
         }
+        $nullmessage = '';
         if (count($attendances) == 0) {
             $nullmessage = '検索結果がありませんでした。';
         }
@@ -69,11 +73,7 @@ class AttendanceController extends Controller
     // 勤怠登録画面
     public function create()
     {
-        $today = Carbon::today('Asia/Tokyo');
-        $year = $today->format('Y');
-        $month = $today->format('m');
-        $day = $today->format('d');
-        return view('attendance.create', ['year' => $year, 'month' => $month, 'day' => $day]);  
+        return view('attendance.create');  
     }
 
     /**
@@ -84,33 +84,37 @@ class AttendanceController extends Controller
      */
     // 勤怠登録機能
     public function store(AttendanceRequest $request)
-    {   
-        DB::transaction(function () use ($request) {
-            // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
-            $attendance = new Attendance;
-            $date = Carbon::createFromDate($request->year, $request->month, $request->day);
-            $start_time = Carbon::create($request->year, $request->month, $request->day, $request->start_time_h, $request->start_time_m, 00);
-            $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
-            $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
-
-            dd($date);
-
-            // データをインスタンスのプロパティに入れてDBへ保存。
-            $attendance->employee_id = session('employee_id');
-            $attendance->company_code = session('company_code');
-            $attendance->date = $date>format('Y-m-d');
-            $attendance->month = $date->format('Y-m');
-            $attendance->start_time = $start_time->format('H:m');
-            $attendance->end_time = $end_time->format('H:m');
-            $attendance->working_hours = $working_hours;
-            $attendance->break_time = $request->break_time;
-            $attendance->delete_flg = 0;
-            $attendance->save();
-        });
-
-        // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
-        session()->flash('toastr', config('toastr.success'));
-        return redirect()->route('/employee/home');
+    {
+        if (checkdate($request->month, $request->day, $request->year)) {
+            DB::transaction(function () use ($request) {
+                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
+                $attendance = new Attendance;
+                $date = $request->year.'-'.$request->month.'-'.$request->day;
+                $month = $request->year.'-'.$request->month;
+                $start_time = Carbon::create($request->year, $request->month, $request->day, $request->start_time_h, $request->start_time_m, 00);
+                $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
+                $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
+    
+    
+                // データをインスタンスのプロパティに入れてDBへ保存。
+                $attendance->employee_id = session('employee_id');
+                $attendance->company_code = session('company_code');
+                $attendance->date = $date;
+                $attendance->month = $month;
+                $attendance->start_time = $start_time->format('H:i');
+                $attendance->end_time = $end_time->format('H:i');
+                $attendance->working_hours = $working_hours;
+                $attendance->break_time = $request->break_time;
+                $attendance->delete_flg = 0;
+                $attendance->save();
+            });
+    
+            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
+            session()->flash('toastr', config('toastr.success'));
+            return redirect()->route('/employee/home');
+        } else {
+            return back()->withInput()->with(['date_error' => '無効な日付です。']);
+        }
     }
 
     /**
@@ -134,13 +138,51 @@ class AttendanceController extends Controller
     public function edit($id)
     {
         $attendance = Attendance::where('id', $id)->first();
-        return view('attendance.edit', ['attendance' => $attendance]);
+        $date = explode("-", $attendance->date);
+        $year = $date[0];
+        $month = $date[1];
+        $day = $date[2];
+        $start_time = explode(":", $attendance->start_time);
+        $start_time_h = $start_time[0];
+        $start_time_m = $start_time[1];
+        $end_time = explode(":", $attendance->end_time);
+        $end_time_h = $end_time[0];
+        $end_time_m = $end_time[1];
+        return view('attendance.edit', [
+            'attendance' => $attendance,
+            'year' => $year,
+            'month' => $month,
+            'day' => $day,
+            'start_time_h' => $start_time_h,
+            'start_time_m' => $start_time_m,
+            'end_time_h' => $end_time_h,
+            'end_time_m' => $end_time_m,
+        ]);
     }
 
     // 管理者用の勤怠編集画面
     public function editforadmin($id) {
         $attendance = Attendance::with('employee')->where('id', $id)->first();
-        return view('attendance.editforadmin', ['attendance' => $attendance]);
+        $date = explode("-", $attendance->date);
+        $year = $date[0];
+        $month = $date[1];
+        $day = $date[2];
+        $start_time = explode(":", $attendance->start_time);
+        $start_time_h = $start_time[0];
+        $start_time_m = $start_time[1];
+        $end_time = explode(":", $attendance->end_time);
+        $end_time_h = $end_time[0];
+        $end_time_m = $end_time[1];
+        return view('attendance.editforadmin', [
+            'attendance' => $attendance,
+            'year' => $year,
+            'month' => $month,
+            'day' => $day,
+            'start_time_h' => $start_time_h,
+            'start_time_m' => $start_time_m,
+            'end_time_h' => $end_time_h,
+            'end_time_m' => $end_time_m,
+        ]);
     }
     /**
      * Update the specified resource in storage.
@@ -150,37 +192,38 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
     // 勤怠更新機能（従業員・管理者用の画面で共通）
-    public function update(Request $request, Attendance $attendance)
+    public function update(AttendanceRequest $request, Attendance $attendance)
     {
-        // バリデーション
-        $this->validate($request, Attendance::$rules);
-
-        DB::transaction(function () use ($request) {
-            // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
-            $attendance = Attendance::find($request->attendance_id);
-            $date = new Carbon($request->date);
-            $time1 = new Carbon($request->start_time);
-            $time2 = new Carbon($request->end_time);
-            $working_hours = ($time1->diffInMinutes($time2) - $request->break_time) / 60;
-
-            // データをインスタンスのプロパティに入れてDBへ保存。
-            $attendance->date = $date;
-            $attendance->month = $date->format('Y-m');
-            $attendance->start_time = $time1;
-            $attendance->end_time = $time2;
-            $attendance->working_hours = $working_hours;
-            $attendance->break_time = $request->break_time;
-            $attendance->delete_flg = 0;
-            $attendance->save();
-        });
-
-        // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
-        if ($request->transition == 'admin') {
-            session()->flash('toastr', config('toastr.success'));
-            return redirect()->route('attendindexbycmp');
-        } elseif ($request->transition == 'employee') {
-            session()->flash('toastr', config('toastr.success'));
-            return redirect()->route('attendindex');
+        if (checkdate($request->month, $request->day, $request->year)) {
+            DB::transaction(function () use ($request) {
+                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
+                $attendance = Attendance::find($request->attendance_id);
+                $date = $request->year.'-'.$request->month.'-'.$request->day;
+                $month = $request->year.'-'.$request->month;
+                $start_time = Carbon::create($request->year, $request->month, $request->day, $request->start_time_h, $request->start_time_m, 00);
+                $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
+                $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
+    
+                // データをインスタンスのプロパティに入れてDBへ保存。
+                $attendance->date = $date;
+                $attendance->month = $month;
+                $attendance->start_time = $start_time->format('H:i');
+                $attendance->end_time = $end_time->format('H:i');
+                $attendance->working_hours = $working_hours;
+                $attendance->break_time = $request->break_time;
+                $attendance->save();
+            });
+    
+            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
+            if ($request->transition == 'admin') {
+                session()->flash('toastr', config('toastr.success'));
+                return redirect()->route('attendindexbycmp');
+            } elseif ($request->transition == 'employee') {
+                session()->flash('toastr', config('toastr.success'));
+                return redirect()->route('attendindex');
+            }
+        } else {
+            return back()->withInput()->with(['date_error' => '無効な日付です。']);
         }
     }
 

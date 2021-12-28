@@ -19,11 +19,11 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="number" name="month" class="form-control small-form" value="{{ old('month') ?? $month }}" min="1" max="12">月
+                                <input type="number" name="month" class="form-control small-form" value="{{ old('month') ?? $month }}">月
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="number" name="day" class="form-control small-form" value="{{ old('day') ?? $day }}" min="1" max="31">日
+                                <input type="number" name="day" class="form-control small-form" value="{{ old('day') ?? $day }}">日
                             </div>
                         </div>
                         @error('year')
@@ -35,15 +35,18 @@
                         @error('day')
                             <p class="text-center">{{ $message }}</p>
                         @enderror
+                        @if (session('date_error'))
+                            <p class="text-center">{{ session('date_error') }}</p>
+                        @endif
 
                         <div class="form-row justify-content-center">
                             <label class="col-form-label text-md-right">始業時間</label>
 
                             <div class="form-group col-md-5">
-                                <input type="number" name="start_time_h" class="form-control small-form" value="{{ old('start_time_h') }}" min="0" max="23">時
+                                <input type="number" name="start_time_h" class="form-control small-form" value="{{ old('start_time_h') }}">時
                             </div>
                             <div class="form-group col-md-5">
-                                <input type="number" name="start_time_m" class="form-control small-form" value="{{ old('start_time_m') }}" min="0" max="59">分
+                                <input type="number" name="start_time_m" class="form-control small-form" value="{{ old('start_time_m') }}">分
                             </div>
                         </div>
                         @error('start_time_h')
@@ -57,10 +60,10 @@
                             <label class="col-form-label text-md-right">終業時間</label>
 
                             <div class="form-group col-md-5">
-                                <input type="number" name="end_time_h" class="form-control small-form" value="{{ old('end_time_h') }}" min="0" max="23">時
+                                <input type="number" name="end_time_h" class="form-control small-form" value="{{ old('end_time_h') }}">時
                             </div>
                             <div class="form-group col-md-5">
-                                <input type="number" name="end_time_m" class="form-control small-form" value="{{ old('end_time_m') }}" min="0" max="59">分
+                                <input type="number" name="end_time_m" class="form-control small-form" value="{{ old('end_time_m') }}">分
                             </div>
                         </div>
                         @error('end_time_h')

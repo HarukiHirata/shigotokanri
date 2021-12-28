@@ -26,7 +26,7 @@ class CompanyController extends Controller
 
         if (empty($company)) {
             session()->flash('toastr', config('toastr.loginfail'));
-            return redirect()->route('/company/login');
+            return back()->withInput()->with(['login_error' => '企業コードが間違っています。']);
         } else {
             if (Hash::check($request->password, $company->password)) {
                 session(['company_code' => $company->company_code]);
@@ -35,7 +35,7 @@ class CompanyController extends Controller
                 return redirect()->route('/company/home');
             } else {
                 session()->flash('toastr', config('toastr.loginfail'));
-                return redirect()->route('/company/login');
+                return back()->withInput()->with(['login_error' => 'パスワードが間違っています。']);
             }
         }
     }
