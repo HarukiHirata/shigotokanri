@@ -15,15 +15,15 @@
                         <div class="form-row justify-content-center">
                             <label class="col-form-label text-md-right">勤務日</label>
                             <div class="form-group col-md-3">
-                                <input type="number" name="year" class="form-control small-form" value="{{ old('year') ?? $year }}">年
+                                <input type="number" name="year" class="form-control small-form" value="{{ old('year') }}">年
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="number" name="month" class="form-control small-form" value="{{ old('month') ?? $month }}">月
+                                <input type="number" name="month" class="form-control small-form" value="{{ old('month') }}">月
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="number" name="day" class="form-control small-form" value="{{ old('day') ?? $day }}">日
+                                <input type="number" name="day" class="form-control small-form" value="{{ old('day') }}">日
                             </div>
                         </div>
                         @error('year')

@@ -25,10 +25,6 @@ Route::get('/admin/login', function() {
 
 Route::post('/admin/login', 'AdminController@adminlogin');
 
-Route::get('/admin/home', function() {
-    return view('/admin/home');
-})->name('/admin/home');
-
 Route::get('/admin/logout', 'AdminController@adminlogout');
 
 Route::get('/employee/login', function() {
@@ -37,43 +33,53 @@ Route::get('/employee/login', function() {
 
 Route::post('/employee/login', 'EmployeeController@emplogin');
 
-Route::get('/employee/home', function() {
-    return view('/employee/home');
-})->name('/employee/home');
-
 Route::get('/employee/logout', 'EmployeeController@emplogout');
-
-Route::get('/employee/attendance/create', 'AttendanceController@create');
-Route::post('/employee/attendance/store', 'AttendanceController@store');
-Route::get('/employee/attendance/edit/{id}', 'AttendanceController@edit');
-Route::post('/attendance/update', 'AttendanceController@update');
-Route::get('/employee/attendance/index', 'AttendanceController@index')->name('attendindex');
-Route::post('/employee/attendance/index', 'AttendanceController@search');
-Route::post('/attendance/destroy/{id}', 'AttendanceController@destroy');
-
-Route::get('/admin/attendance/index', 'AttendanceController@companyindex')->name('attendindexbycmp');
-Route::post('/admin/attendance/index', 'AttendanceController@searchforadmin');
-Route::get('/admin/attendance/edit/{id}', 'AttendanceController@editforadmin');
-
-Route::get('/admin/employeeregister', 'EmployeeController@create')->name('employeeregister');
-Route::post('/admin/employeestore', 'EmployeeController@store');
-Route::get('/admin/employeeindex', 'EmployeeController@index')->name('employeeindex');
-Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit')->name('employeeedit');
-Route::post('/admin/employeeupdate', 'EmployeeController@update');
-Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');
 
 Route::get('/company/login', function() {
     return view('company.login');
 });
+
 Route::post('/company/login', 'CompanyController@companylogin');
-Route::get('/company/home', 'AdminController@index')->name('/company/home');
+
 Route::get('/company/logout', 'CompanyController@companylogout');
 
-Route::get('/company/adminregister', 'AdminController@create')->name('adminregister');
-Route::post('/company/adminstore', 'AdminController@store');
-Route::get('/company/adminedit/{id}', 'AdminController@edit')->name('adminedit');
-Route::post('/company/adminupdate', 'AdminController@update');
-Route::post('/company/admindestroy/{id}', 'AdminController@destroy');
-
 Route::get('/company/register', 'CompanyController@create');
+
 Route::post('/company/store', 'CompanyController@store');
+
+Route::middleware(['login'])->group(function() {
+    Route::get('/admin/home', function() {
+        return view('/admin/home');
+    })->name('/admin/home');
+    
+    Route::get('/employee/home', function() {
+        return view('/employee/home');
+    })->name('/employee/home');
+    
+    Route::get('/employee/attendance/create', 'AttendanceController@create');
+    Route::post('/employee/attendance/store', 'AttendanceController@store');
+    Route::get('/employee/attendance/edit/{id}', 'AttendanceController@edit');
+    Route::post('/attendance/update', 'AttendanceController@update');
+    Route::get('/employee/attendance/index', 'AttendanceController@index')->name('attendindex');
+    Route::post('/employee/attendance/index', 'AttendanceController@search');
+    Route::post('/attendance/destroy/{id}', 'AttendanceController@destroy');
+    
+    Route::get('/admin/attendance/index', 'AttendanceController@companyindex')->name('attendindexbycmp');
+    Route::post('/admin/attendance/index', 'AttendanceController@searchforadmin');
+    Route::get('/admin/attendance/edit/{id}', 'AttendanceController@editforadmin');
+    
+    Route::get('/admin/employeeregister', 'EmployeeController@create')->name('employeeregister');
+    Route::post('/admin/employeestore', 'EmployeeController@store');
+    Route::get('/admin/employeeindex', 'EmployeeController@index')->name('employeeindex');
+    Route::get('/admin/employeeedit/{id}', 'EmployeeController@edit')->name('employeeedit');
+    Route::post('/admin/employeeupdate', 'EmployeeController@update');
+    Route::post('/admin/employeedestroy/{id}', 'EmployeeController@destroy');
+    
+    Route::get('/company/home', 'AdminController@index')->name('/company/home');
+    
+    Route::get('/company/adminregister', 'AdminController@create')->name('adminregister');
+    Route::post('/company/adminstore', 'AdminController@store');
+    Route::get('/company/adminedit/{id}', 'AdminController@edit')->name('adminedit');
+    Route::post('/company/adminupdate', 'AdminController@update');
+    Route::post('/company/admindestroy/{id}', 'AdminController@destroy');    
+});

@@ -18,12 +18,12 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    // 従業員用の勤怠一覧
+    // 従業員用の勤怠一覧表示画面遷移処理
     public function index() {
         return view('attendance.index');
     }
 
-    // 従業員用の勤怠検索メソッド
+    // 従業員用の勤怠検索処理
     public function search(Request $request) {
         if (!empty($request->search_month)) {
             $attendances = Attendance::where('employee_id', session('employee_id'))->where('month', $request->search_month)->get();
@@ -37,7 +37,7 @@ class AttendanceController extends Controller
         return view('attendance.index', ['attendances' => $attendances, 'nullmessage' => $nullmessage]);
     }
 
-    // 管理者用の勤怠一覧
+    // 管理者用の勤怠一覧表示画面遷移処理
     public function companyindex()
     {
         $employee = new EmployeeController;
@@ -45,7 +45,7 @@ class AttendanceController extends Controller
         return view('attendance.companyindex', ['employees' => $employees]);
     }
 
-    //  管理者用の勤怠検索メソッド
+    //  管理者用の勤怠検索処理
     public function searchforadmin(Request $request) {
         if (!empty($request->employee_id) && !empty($request->search_month)) {
             $attendances = Attendance::with('employee')->where('employee_id', $request->employee_id)->where('month', $request->search_month)->get();
@@ -70,7 +70,7 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // 勤怠登録画面
+    // 勤怠登録画面遷移処理
     public function create()
     {
         return view('attendance.create');  
@@ -82,12 +82,11 @@ class AttendanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // 勤怠登録機能
+    // 勤怠登録機能遷移処理
     public function store(AttendanceRequest $request)
     {
         if (checkdate($request->month, $request->day, $request->year)) {
             DB::transaction(function () use ($request) {
-                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
                 $attendance = new Attendance;
                 $date = $request->year.'-'.$request->month.'-'.$request->day;
                 $month = $request->year.'-'.$request->month;
@@ -95,8 +94,6 @@ class AttendanceController extends Controller
                 $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
                 $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
     
-    
-                // データをインスタンスのプロパティに入れてDBへ保存。
                 $attendance->employee_id = session('employee_id');
                 $attendance->company_code = session('company_code');
                 $attendance->date = $date;
@@ -109,7 +106,6 @@ class AttendanceController extends Controller
                 $attendance->save();
             });
     
-            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
             session()->flash('toastr', config('toastr.success'));
             return redirect()->route('/employee/home');
         } else {
@@ -118,23 +114,12 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Attendance  $attendance
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Attendance $attendance)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 従業員用の勤怠編集画面
+    // 従業員用の勤怠編集画面遷移処理
     public function edit($id)
     {
         $attendance = Attendance::where('id', $id)->first();
@@ -160,7 +145,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 管理者用の勤怠編集画面
+    // 管理者用の勤怠編集画面遷移処理
     public function editforadmin($id) {
         $attendance = Attendance::with('employee')->where('id', $id)->first();
         $date = explode("-", $attendance->date);
@@ -191,12 +176,11 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 勤怠更新機能（従業員・管理者用の画面で共通）
+    // 勤怠更新処理（従業員・管理者用の画面で共通）
     public function update(AttendanceRequest $request, Attendance $attendance)
     {
         if (checkdate($request->month, $request->day, $request->year)) {
             DB::transaction(function () use ($request) {
-                // インスタンス生成した後、フォームで入力された日付けと始業時間、終業時間を変数に代入して勤務時間を計算して変数に代入
                 $attendance = Attendance::find($request->attendance_id);
                 $date = $request->year.'-'.$request->month.'-'.$request->day;
                 $month = $request->year.'-'.$request->month;
@@ -204,7 +188,6 @@ class AttendanceController extends Controller
                 $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
                 $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
     
-                // データをインスタンスのプロパティに入れてDBへ保存。
                 $attendance->date = $date;
                 $attendance->month = $month;
                 $attendance->start_time = $start_time->format('H:i');
@@ -214,7 +197,6 @@ class AttendanceController extends Controller
                 $attendance->save();
             });
     
-            // 登録成功のメッセージをセッションに保存してホーム画面へ遷移
             if ($request->transition == 'admin') {
                 session()->flash('toastr', config('toastr.success'));
                 return redirect()->route('attendindexbycmp');
@@ -233,7 +215,7 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    // 勤怠履歴削除機能（従業員・管理者用の画面で共通）
+    // 勤怠履歴削除処理（従業員・管理者用の画面で共通）
     public function destroy(Request $request)
     {
         DB::transaction(function () use ($request) {
@@ -251,6 +233,7 @@ class AttendanceController extends Controller
         }
     }
 
+    // 勤怠履歴削除処理（従業員情報が削除された場合にその従業員の勤怠履歴を削除）
     public function destroybyemployeeid($employee_id) {
         DB::transaction(function () use ($employee_id) {
             Attendance::where('employee_id', $employee_id)->update(['delete_flg' => 1]);
