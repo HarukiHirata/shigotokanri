@@ -89,7 +89,7 @@ class AttendanceController extends Controller
             DB::transaction(function () use ($request) {
                 $attendance = new Attendance;
                 $date = $request->year.'-'.$request->month.'-'.$request->day;
-                $month = $request->year.'-'.$request->month;
+                $month = $request->year.'-'.sprintf("%02d", $request->month);
                 $start_time = Carbon::create($request->year, $request->month, $request->day, $request->start_time_h, $request->start_time_m, 00);
                 $end_time = Carbon::create($request->year, $request->month, $request->day, $request->end_time_h, $request->end_time_m, 00);
                 $working_hours = ($start_time->diffInMinutes($end_time) - $request->break_time) / 60;
